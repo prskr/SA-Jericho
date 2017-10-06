@@ -1,0 +1,41 @@
+# Sensitive or high-churn files:
+.idea/
+
+# CMake
+cmake-build-debug/
+
+## File-based project format:
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# Ruby plugin and RubyMine
+/.rakeTasks
+
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+### Gradle ###
+.gradle
+build/
+gradlew
+gradlew.bat
+
+# Cache of project
+.gradletasknamecache

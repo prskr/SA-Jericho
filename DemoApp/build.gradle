@@ -1,0 +1,37 @@
+group 'de.fhro.inf.sa'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("io.vertx:vertx-web:${vertxWebVersion}")
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
+    testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
+    testRuntime("org.apache.logging.log4j:log4j-core:${log4jVersion}")
+    testRuntime("org.apache.logging.log4j:log4j-jul:${log4jVersion}")
+}
+
+junitPlatform {
+    logManager 'org.apache.logging.log4j.jul.LogManager'
+    reportsDir file('build/test-results/junit-platform') // this is the default
+}
+
