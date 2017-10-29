@@ -16,6 +16,9 @@ services:
       dockerfile: Dockerfile-Debug.dockerfile
     ports:
       - "5005:5005"
+      - "8080:8080"
+    volumes:
+      - "~/.gradle:/home/gradle/.gradle"
     entrypoint:
       - gradle
       - run

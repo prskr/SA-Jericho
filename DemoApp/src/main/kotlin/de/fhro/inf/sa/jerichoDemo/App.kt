@@ -1,5 +1,6 @@
 package de.fhro.inf.sa.jerichoDemo
 
+import io.vertx.core.Vertx
 import liquibase.Liquibase
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
@@ -16,5 +17,7 @@ fun main(args: Array<String>) {
 	}catch (e: Exception) {
 		e.printStackTrace()
 	}
-	println("Hello, world!")
+
+	val vertx = Vertx.vertx()
+	vertx.deployVerticle(MainApiVerticle())
 }

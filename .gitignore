@@ -42,3 +42,6 @@ gradlew.bat
 
 #Docker
 container_settings.json
+
+#Exclude JARs
+*.jar
