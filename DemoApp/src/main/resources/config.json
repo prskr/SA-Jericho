@@ -1,0 +1,6 @@
+{
+  "jdbc.hostname": "localhost",
+  "jdbc.port": 32770,
+  "jdbc.user": "",
+  "jdbc.password": ""
+}

@@ -39,3 +39,6 @@ gradlew.bat
 
 # Cache of project
 .gradletasknamecache
+
+#Docker
+container_settings.json

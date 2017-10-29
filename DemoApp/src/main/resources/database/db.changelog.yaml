@@ -1,0 +1,25 @@
+databaseChangeLog:
+    - changeSet:
+        id: 1
+        author: Peter Kurfer
+        changes:
+            - createTable:
+                tableName: jokes
+                columns:
+                    - column:
+                        name: id
+                        type: serial
+                        autoIncrement: true
+                        constraints:
+                          primaryKey: true
+                          nullable: false
+                    - column:
+                        name: joke
+                        type: varchar(255)
+                        constraints:
+                          nullable: false
+                    - column:
+                        name: category
+                        type: varchar(50)
+                        constraints:
+                          nullable: false
