@@ -1,0 +1,10 @@
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: Jericho ICNDB
+host: localhost:8080
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /jokes
