@@ -90,7 +90,7 @@ paths:
           description: success
           schema:
             $ref: '#/definitions/Joke'
-  /jokes/random:
+  /joke/random:
     get:
       tags:
         - jokes

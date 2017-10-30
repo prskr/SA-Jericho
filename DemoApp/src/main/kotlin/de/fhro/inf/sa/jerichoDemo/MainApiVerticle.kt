@@ -5,20 +5,26 @@ import com.github.phiz71.vertx.swagger.router.OperationIdServiceIdResolver
 import com.github.phiz71.vertx.swagger.router.SwaggerRouter
 import de.fhro.inf.sa.jerichoDemo.api.verticles.CategoriesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.api.verticles.JokesApiVerticle
+import de.fhro.inf.sa.jerichoDemo.persistence.JokesJpaApiVerticle
+import io.github.jklingsporn.vertx.jooq.async.future.AsyncJooqSQLClient
 import io.swagger.parser.SwaggerParser
 import io.vertx.config.ConfigRetriever
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
+import io.vertx.core.Vertx
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.Logger
 import io.vertx.core.logging.LoggerFactory
+import io.vertx.ext.asyncsql.PostgreSQLClient
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.config.ConfigRetrieverOptions
 import io.vertx.kotlin.config.ConfigStoreOptions
 import liquibase.Liquibase
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
+import org.jooq.SQLDialect
+import org.jooq.impl.DefaultConfiguration
 import java.nio.charset.Charset
 import java.sql.DriverManager
 
@@ -69,6 +75,17 @@ class MainApiVerticle : AbstractVerticle() {
 	}
 
 	private fun deployVerticles(startFuture: Future<Void>?, config: JsonObject) {
+
+		val jooqConfig = DefaultConfiguration()
+		jooqConfig.set(SQLDialect.POSTGRES)
+
+		val configJson = JsonObject(mapOf(
+				Pair("host", config.getString("jdbc.hostname", "localhost")),
+				Pair("username", config.getString("jdbc.user", "jericho")),
+				Pair("password", config.getString("jdbc.password", null)),
+				Pair("database", "jericho")
+		))
+
 		vertx.deployVerticle(JokesApiVerticle(), { res ->
 			if (res.succeeded()) {
 				logger.info("JokeApiVerticle: Deployed")
@@ -83,6 +100,18 @@ class MainApiVerticle : AbstractVerticle() {
 			else {
 				startFuture?.fail(res.cause())
 				logger.error("CategoriesApiVerticle: Deployment failed")
+			}
+		})
+
+		val clientProducer = { vertx: Vertx -> AsyncJooqSQLClient.create(vertx, PostgreSQLClient.createNonShared(vertx, configJson))
+		}
+
+		vertx.deployVerticle(JokesJpaApiVerticle(clientProducer, jooqConfig), { res ->
+			if(res.succeeded())
+				logger.info("${JokesJpaApiVerticle::class.java.name}: Deployed")
+			else{
+				startFuture?.fail(res.cause())
+				logger.error("${JokesJpaApiVerticle::class.java.name}: Deployment failed")
 			}
 		})
 	}
