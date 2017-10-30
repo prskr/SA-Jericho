@@ -1,4 +1,4 @@
-package de.fhro.inf.sa.jerichoDemo.persisence
+package de.fhro.inf.sa.jerichoDemo.persistence
 
 import de.fhro.inf.sa.jerichoDemo.api.ICategoriesApi
 import de.fhro.inf.sa.jerichoDemo.model.CategoryDto

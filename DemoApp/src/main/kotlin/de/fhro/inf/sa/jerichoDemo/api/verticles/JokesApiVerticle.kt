@@ -4,7 +4,7 @@ import de.fhro.inf.sa.jerichoDemo.api.IJokeApi
 import de.fhro.inf.sa.jerichoDemo.api.error.ApiExceptions
 import de.fhro.inf.sa.jerichoDemo.api.error.MainApiException
 import de.fhro.inf.sa.jerichoDemo.model.JokeDto
-import de.fhro.inf.sa.jerichoDemo.persisence.JokesJpaApi
+import de.fhro.inf.sa.jerichoDemo.persistence.JokesJpaApi
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler

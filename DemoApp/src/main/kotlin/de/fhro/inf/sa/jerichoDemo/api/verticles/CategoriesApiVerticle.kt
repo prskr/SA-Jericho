@@ -4,7 +4,7 @@ import de.fhro.inf.sa.jerichoDemo.api.ICategoriesApi
 import de.fhro.inf.sa.jerichoDemo.api.error.ApiExceptions
 import de.fhro.inf.sa.jerichoDemo.api.error.MainApiException
 import de.fhro.inf.sa.jerichoDemo.model.CategoryDto
-import de.fhro.inf.sa.jerichoDemo.persisence.CategoriesJpaApi
+import de.fhro.inf.sa.jerichoDemo.persistence.CategoriesJpaApi
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Handler
 import io.vertx.core.eventbus.Message

@@ -6,13 +6,21 @@ import com.github.phiz71.vertx.swagger.router.SwaggerRouter
 import de.fhro.inf.sa.jerichoDemo.api.verticles.CategoriesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.api.verticles.JokesApiVerticle
 import io.swagger.parser.SwaggerParser
+import io.vertx.config.ConfigRetriever
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.core.json.Json
+import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.Logger
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.ext.web.Router
+import io.vertx.kotlin.config.ConfigRetrieverOptions
+import io.vertx.kotlin.config.ConfigStoreOptions
+import liquibase.Liquibase
+import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.ClassLoaderResourceAccessor
 import java.nio.charset.Charset
+import java.sql.DriverManager
 
 /**
  * @author Peter Kurfer
@@ -24,27 +32,43 @@ class MainApiVerticle : AbstractVerticle() {
 	private val router: Router = Router.router(vertx)
 
 	override fun start(startFuture: Future<Void>?) {
-		Json.mapper.registerModule(JavaTimeModule())
-		val fileSystem = vertx.fileSystem()
-		fileSystem.readFile("swagger.yml", { readFile ->
-			if (readFile.succeeded()) {
-				val swagger = SwaggerParser().parse(readFile.result().toString(Charset.forName("utf-8")))
-				val swaggerRouter = SwaggerRouter.swaggerRouter(router, swagger, vertx.eventBus(), OperationIdServiceIdResolver())
 
-				deployVerticles(startFuture)
+		try {
+			val liquibase = Liquibase("database/db.changelog.yaml", ClassLoaderResourceAccessor(), JdbcConnection(DriverManager.getConnection("jdbc:postgresql://database:5432/jericho", "jericho", "W@c[3~DV>~:]4%+5")))
+			liquibase.update("production")
+		}catch (e: Exception) {
+			e.printStackTrace()
+		}
 
-				vertx.createHttpServer()
-						.requestHandler(swaggerRouter::accept)
-						.listen(8080)
-				startFuture?.complete()
+		val retrieverOptions = ConfigRetrieverOptions()
+				.addStore(ConfigStoreOptions(JsonObject(mapOf(Pair("path", "conf/application-conf.json"))), type = "file"))
+		val retriever = ConfigRetriever.create(vertx, retrieverOptions)
 
-			} else {
-				startFuture?.fail(readFile.cause())
-			}
+		retriever.getConfig({ configResult ->
+			val port = configResult.result().getInteger("http.port", 8080)
+
+			Json.mapper.registerModule(JavaTimeModule())
+			val fileSystem = vertx.fileSystem()
+			fileSystem.readFile("swagger.yml", { readFile ->
+				if (readFile.succeeded()) {
+					val swagger = SwaggerParser().parse(readFile.result().toString(Charset.forName("utf-8")))
+					val swaggerRouter = SwaggerRouter.swaggerRouter(router, swagger, vertx.eventBus(), OperationIdServiceIdResolver())
+
+					deployVerticles(startFuture, configResult.result())
+
+					vertx.createHttpServer()
+							.requestHandler(swaggerRouter::accept)
+							.listen(port)
+					startFuture?.complete()
+
+				} else {
+					startFuture?.fail(readFile.cause())
+				}
+			})
 		})
 	}
 
-	private fun deployVerticles(startFuture: Future<Void>?) {
+	private fun deployVerticles(startFuture: Future<Void>?, config: JsonObject) {
 		vertx.deployVerticle(JokesApiVerticle(), { res ->
 			if (res.succeeded()) {
 				logger.info("JokeApiVerticle: Deployed")
