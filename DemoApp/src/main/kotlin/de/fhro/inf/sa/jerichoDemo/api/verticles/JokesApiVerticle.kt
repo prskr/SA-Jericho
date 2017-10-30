@@ -48,24 +48,7 @@ class JokesApiVerticle : AbstractVerticle() {
 
 		vertx.eventBus().consumer<JsonObject>(getJokeServiceId).handler(this::handleGetJoke)
 
-		/*vertx.eventBus().consumer<JsonObject>(getJokesServiceId).handler { message ->
-			try {
-				val pageIndex = Json.mapper.readValue(message.body().getString("page_index"), Int::class.java)
-				val pageSize = Json.mapper.readValue(message.body().getString("page_size"), Int::class.java)
-
-				service.getJokes(pageIndex, pageSize, Handler { result ->
-					if(result.succeeded()) {
-						message.reply(JsonObject(Json.encode(result.result())).encode())
-					}else{
-						val cause = result.cause()
-						manageError(message, cause, getJokesServiceId)
-					}
-				})
-			}catch (e: Exception) {
-				logUnexpectedError(getJokesServiceId, e)
-				message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
-			}
-		}*/
+		vertx.eventBus().consumer<JsonObject>(getJokesServiceId).handler(this::handleGetJokes)
 
 		vertx.eventBus().consumer<JsonObject>(getRandomJokeServiceId).handler(this::handleGetRandomJoke)
 
@@ -101,6 +84,20 @@ class JokesApiVerticle : AbstractVerticle() {
 			})
 		} catch (e: Exception) {
 			logUnexpectedError(getJokeServiceId, e)
+			message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
+		}
+	}
+
+	private fun handleGetJokes(message: Message<JsonObject>) {
+		try {
+			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_JOKES_JPA_ID, message.body(), { result ->
+				if(result.succeeded())
+					message.reply(result.result().body())
+				else
+					manageError(message, result.cause(), getJokesServiceId)
+			})
+		}catch (e: Exception) {
+			logUnexpectedError(getJokesServiceId, e)
 			message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
 		}
 	}

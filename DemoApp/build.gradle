@@ -25,6 +25,14 @@ apply plugin: "com.github.johnrengelman.plugin-shadow"
 sourceCompatibility = 1.8
 mainClassName = "io.vertx.core.Launcher"
 def mainVerticleName = "de.fhro.inf.sa.jerichoDemo.MainApiVerticle"
+def watchForChange = 'src/**/*.*'
+
+def doOnChange
+if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+    doOnChange = '.\\gradlew classes'
+} else {
+    doOnChange = './gradlew classes'
+}
 
 repositories {
     mavenCentral()
@@ -39,7 +47,7 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeJsr310Version}")
     compile("io.github.jklingsporn:vertx-jooq-async-future:${vertxJooqAsyncFutureVersion}")
-
+    compile("org.jooq:jooq:${jooqVersion}")
     testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
     testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
@@ -74,5 +82,10 @@ shadowJar {
 }
 
 run {
-    args = ['run', mainVerticleName, "--launcher-class=$mainClassName"]
+    args = [
+            'run',
+            mainVerticleName,
+            "--launcher-class=$mainClassName",
+            "--debug-jvm"
+    ]
 }

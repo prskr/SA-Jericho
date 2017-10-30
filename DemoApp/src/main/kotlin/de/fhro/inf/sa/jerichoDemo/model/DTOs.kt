@@ -8,10 +8,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class JokeDto(var id: Int = 0, var joke: String = "", var category: String = "")
+data class JokeDto(var id: Int = 0, var joke: String = "", var category: String? = "")
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class JokesArrayDto(var id: Int = 0, var jokes: List<JokeDto> = listOf())
+data class JokesArrayDto(var count: Int = 0, var jokes: List<JokeDto> = listOf())
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CategoriesArrayDto(var count: Int = 0, var categories: List<CategoryDto> = listOf())
