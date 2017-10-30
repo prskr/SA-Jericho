@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.5.3)  30 OCT 2017 17:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.5.3)  30 OCT 2017 17:31
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -1202,8 +1202,8 @@ Package floatrow Info: Redefining fcapside on input line 108.
 
 Writing index file thesis.idx
 (thesis.aux (title.aux) (toc.aux) (chapters.aux) (abstract.aux)
-(introduction.aux) (docker.aux) (gatling.aux) (kubernetes.aux) (conclusion.aux)
-(abbreviations.aux) (append.aux))
+(introduction.aux) (docker.aux) (gatling.aux) (kubernetes.aux) (vertx.aux)
+(conclusion.aux) (abbreviations.aux) (append.aux))
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 133.
@@ -1291,19 +1291,19 @@ LaTeX Info: Redefining \nameref on input line 133.
 
  (title.tex
 Package epstopdf Info: Source file: <figures/HS_Logo_aktuell_CMYK.eps>
-(epstopdf)                    date: 2017-06-30 09:43:35
+(epstopdf)                    date: 2017-10-30 17:15:22
 (epstopdf)                    size: 233866 bytes
 (epstopdf)             Output file: <figures/HS_Logo_aktuell_CMYK-eps-converted
 -to.pdf>
-(epstopdf)                    date: 2017-06-30 09:43:35
-(epstopdf)                    size: 17826 bytes
+(epstopdf)                    date: 2017-10-30 17:29:04
+(epstopdf)                    size: 17839 bytes
 (epstopdf)             Command: <epstopdf --outfile=figures/HS_Logo_aktuell_CMY
 K-eps-converted-to.pdf figures/HS_Logo_aktuell_CMYK.eps>
 (epstopdf)             \includegraphics on input line 8.
 Package epstopdf Info: Output file is already uptodate.
 
-<figures/HS_Logo_aktuell_CMYK-eps-converted-to.pdf, id=67, 299.1175pt x 114.427
-5pt>
+<figures/HS_Logo_aktuell_CMYK-eps-converted-to.pdf, id=127, 299.1175pt x 114.42
+75pt>
 File: figures/HS_Logo_aktuell_CMYK-eps-converted-to.pdf Graphic file (type pdf)
 
  <use figures/HS_Logo_aktuell_CMYK-eps-converted-to.pdf>
@@ -1515,6 +1515,26 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 5.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 5.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 7.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 7.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 10.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 10.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 13.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 13.
+LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 15.
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 11.39996pt on input line 15.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 15.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 15.
 )
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 163.
@@ -1539,10 +1559,6 @@ Package babel Info: Redefining ngerman shorthand "|
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 3.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 3.
-Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 5.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 5.
@@ -1550,6 +1566,18 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 7.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 7.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 9.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 9.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 11.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 11.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 14.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 14.
 )
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 164.
@@ -1581,6 +1609,22 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 5.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 5.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 7.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 7.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 9.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 9.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 11.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 11.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 13.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 13.
 )
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 165.
@@ -1596,33 +1640,30 @@ Package babel Info: Redefining ngerman shorthand "~
 
 
 ]
-\openout2 = `conclusion.aux'.
+\openout2 = `vertx.aux'.
 
- (conclusion.tex
+ (vertx.tex
 chapter 5.
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 6.
+(babel)             in language  on input line 3.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 6.
+(babel)             in language  on input line 3.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 6.
+(babel)             in language  on input line 5.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 6.
-[6
-
-
-
-
-]
-chapter 6.
+(babel)             in language  on input line 5.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 6.
+(babel)             in language  on input line 7.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 6.
+(babel)             in language  on input line 7.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 9.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 9.
 )
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 166.
@@ -1632,7 +1673,49 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 166.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 166.
- [7
+ [6
+
+
+
+
+]
+\openout2 = `conclusion.aux'.
+
+ (conclusion.tex
+chapter 6.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 6.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 6.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 6.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 6.
+[7
+
+
+
+
+]
+chapter 7.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 6.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 6.
+)
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 167.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 167.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 167.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 167.
+ [8
 
 
 ]
@@ -1640,14 +1723,14 @@ Package babel Info: Redefining ngerman shorthand "~
 
  (abbreviations.tex)
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 170.
- [8
+(babel)             in language  on input line 171.
+ [9
 
 
 
@@ -1669,7 +1752,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 8.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 8.
-[9
+[10
 
 
 
@@ -1688,7 +1771,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 9.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 9.
-[10
+[11
 
 
 ]
@@ -1735,7 +1818,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 10.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 10.
- [11
+ [12
 
 
 ]
@@ -1792,7 +1875,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 12.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 12.
- [12
+ [13
 
 
 
@@ -1841,7 +1924,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 14.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 14.
- [13
+ [14
 
 
 
@@ -1858,44 +1941,44 @@ LaTeX Warning: Empty `thebibliography' environment or \BreakBibliography
 
 ))
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 171.
+(babel)             in language  on input line 172.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 171.
+(babel)             in language  on input line 172.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 171.
+(babel)             in language  on input line 172.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 171.
- [14
+(babel)             in language  on input line 172.
+ [15
 
 
 
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 175.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 175.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 176.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 176.
  (thesis.aux (title.aux) (toc.aux) (chapters.aux) (abstract.aux)
-(introduction.aux) (docker.aux) (gatling.aux) (kubernetes.aux) (conclusion.aux)
-(abbreviations.aux) (append.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 175.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 175.
+(introduction.aux) (docker.aux) (gatling.aux) (kubernetes.aux) (vertx.aux)
+(conclusion.aux) (abbreviations.aux) (append.aux))
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 176.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 176.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: A0B35303725E246394C93D89F215464B;855.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 175.
+(rerunfilecheck)             Checksum: 67074030FE98C3F5EA0B0FD5F53C2D7A;1816.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 176.
  ) 
 Here is how much of TeX's memory you used:
- 16825 strings out of 493328
- 263912 string characters out of 3139119
- 512923 words of memory out of 3000000
- 19880 multiletter control sequences out of 15000+200000
- 38862 words of font info for 81 fonts, out of 3000000 for 9000
+ 16873 strings out of 493328
+ 264522 string characters out of 3139119
+ 516923 words of memory out of 3000000
+ 19904 multiletter control sequences out of 15000+200000
+ 41592 words of font info for 83 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  58i,10n,100p,8819b,509s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
 KTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts
 /type1/urw/palatino/uplr8a.pfb>
-Output written on thesis.pdf (16 pages, 70805 bytes).
+Output written on thesis.pdf (17 pages, 82948 bytes).
 PDF statistics:
- 188 PDF objects out of 1000 (max. 8388607)
- 40 named destinations out of 1000 (max. 500000)
- 22662 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 270 PDF objects out of 1000 (max. 8388607)
+ 56 named destinations out of 1000 (max. 500000)
+ 23294 words of extra memory for PDF output out of 24883 (max. 10000000)
 
