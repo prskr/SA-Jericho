@@ -6,7 +6,6 @@ import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.daos.JokesDao
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Jokes
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.records.JokesRecord
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.IJokesRepository
-import de.fhro.inf.sa.jerichoDemo.persistence.repositories.RepositoryBase
 import org.jooq.impl.DSL
 import java.util.concurrent.CompletableFuture
 

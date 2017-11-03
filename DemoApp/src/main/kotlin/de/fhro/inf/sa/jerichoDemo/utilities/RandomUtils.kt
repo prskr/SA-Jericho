@@ -1,11 +1,11 @@
 package de.fhro.inf.sa.jerichoDemo.utilities
 
-import java.util.*
+import java.util.Random
 
 /**
  * @author Peter Kurfer
  * Created on 10/30/17.
  */
-private val random: Random = Random()
+private val randomInstance: Random = Random()
 
-fun ClosedRange<Int>.random() = random.nextInt(endInclusive - start) + start
+fun ClosedRange<Int>.random() = randomInstance.nextInt(endInclusive - start) + start

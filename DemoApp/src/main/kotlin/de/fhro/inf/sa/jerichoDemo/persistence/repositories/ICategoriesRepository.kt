@@ -1,6 +1,7 @@
 package de.fhro.inf.sa.jerichoDemo.persistence.repositories
 
-import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.Categories
+import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Categories
+import java.util.concurrent.CompletableFuture
 
 /**
  * @author Peter Kurfer
@@ -8,4 +9,5 @@ import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.Categories
  */
 interface ICategoriesRepository : IRepository<Categories, Int> {
 
+	fun exists(category: String): CompletableFuture<Boolean>
 }

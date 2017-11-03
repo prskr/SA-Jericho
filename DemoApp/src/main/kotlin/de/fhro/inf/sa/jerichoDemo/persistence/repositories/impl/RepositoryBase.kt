@@ -1,11 +1,11 @@
-package de.fhro.inf.sa.jerichoDemo.persistence.repositories
+package de.fhro.inf.sa.jerichoDemo.persistence.repositories.impl
 
+import de.fhro.inf.sa.jerichoDemo.persistence.repositories.IRepository
+import io.github.jklingsporn.vertx.jooq.async.future.AsyncJooqSQLClient
 import io.github.jklingsporn.vertx.jooq.async.future.VertxDAO
 import io.github.jklingsporn.vertx.jooq.async.shared.VertxPojo
 import org.jooq.UpdatableRecord
-import org.jooq.impl.DAOImpl
 import java.util.concurrent.CompletableFuture
-import java.util.function.Consumer
 
 /**
  * @author Peter Kurfer
@@ -22,4 +22,8 @@ abstract class RepositoryBase<TEntity : VertxPojo?, TRecord : UpdatableRecord<TR
 	override fun findAsync(id: TId): CompletableFuture<TEntity> = dao.findByIdAsync(id)
 
 	override fun countAsync(): CompletableFuture<Long> = dao.countAsync()
+
+	override fun existsAsync(id: TId): CompletableFuture<Boolean> = dao.existsByIdAsync(id)
+
+	override fun setClient(asyncJooqSQLClient: AsyncJooqSQLClient) = dao.setClient(asyncJooqSQLClient)
 }

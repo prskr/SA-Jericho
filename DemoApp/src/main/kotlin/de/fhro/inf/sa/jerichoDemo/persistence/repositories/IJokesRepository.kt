@@ -9,5 +9,5 @@ import java.util.concurrent.CompletableFuture
  * Created on 10/30/17.
  */
 interface IJokesRepository : IRepository<Jokes, Int> {
-	fun findAllIncludingCategory(pageIndex: Int, pageSize: Int) : CompletableFuture<List<JokeDto>>
+	fun findAllIncludingCategory(pageIndex: Int, pageSize: Int): CompletableFuture<List<JokeDto>>
 }

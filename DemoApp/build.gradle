@@ -42,6 +42,7 @@ dependencies {
     compile("com.github.phiz71:vertx-swagger-router:${vertxSwaggerRouterVersion}")
     compile("io.vertx:vertx-web:${vertxWebVersion}")
     compile("io.vertx:vertx-config:${vertxConfigVersion}")
+    compile("com.englishtown.vertx:vertx-guice:${vertxGuiceVersion}")
     compile("org.liquibase:liquibase-core:${liquibaseVersion}")
     compile("org.postgresql:postgresql:${pgsqlDriverVersion}")
     compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version")

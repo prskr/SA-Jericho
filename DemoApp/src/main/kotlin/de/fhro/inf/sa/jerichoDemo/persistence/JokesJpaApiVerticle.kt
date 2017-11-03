@@ -1,14 +1,16 @@
 package de.fhro.inf.sa.jerichoDemo.persistence
 
+import com.google.inject.Inject
 import de.fhro.inf.sa.jerichoDemo.api.error.ApiExceptions
 import de.fhro.inf.sa.jerichoDemo.model.JokeDto
 import de.fhro.inf.sa.jerichoDemo.model.JokesArrayDto
-import de.fhro.inf.sa.jerichoDemo.persistence.generated.Tables.CATEGORIES
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.daos.CategoriesDao
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.daos.JokesDao
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Categories
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Jokes
+import de.fhro.inf.sa.jerichoDemo.persistence.repositories.ICategoriesRepository
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.IJokesRepository
+import de.fhro.inf.sa.jerichoDemo.persistence.repositories.impl.CategoriesRepository
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.impl.JokesRepository
 import de.fhro.inf.sa.jerichoDemo.utilities.anyToInt
 import de.fhro.inf.sa.jerichoDemo.utilities.random
@@ -18,27 +20,22 @@ import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
+import io.vertx.ext.asyncsql.PostgreSQLClient
 import org.jooq.Configuration
-import org.jooq.impl.DSL
 
 /**
  * @author Peter Kurfer
  * Created on 10/29/17.
  */
-class JokesJpaApiVerticle(private val clientProducer: (Vertx) -> AsyncJooqSQLClient, private val configuration: Configuration) : AbstractVerticle() {
+class JokesJpaApiVerticle @Inject constructor(private val jokesRepo : IJokesRepository, private val categoriesRepo: ICategoriesRepository) : AbstractVerticle() {
 
 	private lateinit var client: AsyncJooqSQLClient
-	private lateinit var jokesRepo: IJokesRepository
-	private val jokeDao: JokesDao = JokesDao(configuration)
-	private val categoryDao: CategoriesDao = CategoriesDao(configuration)
 
 
 	override fun start() {
-		client = clientProducer(vertx)
-		jokeDao.setClient(client)
-		categoryDao.setClient(client)
-
-		jokesRepo = JokesRepository(jokeDao)
+		client = AsyncJooqSQLClient.create(vertx, PostgreSQLClient.createNonShared(vertx, config()))
+		jokesRepo.setClient(client)
+		categoriesRepo.setClient(client)
 
 		/* GET_JOKE_JPA_ID */
 		vertx.eventBus().consumer<Int>(CQRSEndpoints.GET_JOKE_JPA_ID).handler(this::handleGetJokeById)
@@ -69,7 +66,7 @@ class JokesJpaApiVerticle(private val clientProducer: (Vertx) -> AsyncJooqSQLCli
 	}
 
 	private fun handleGetRandomJoke(message: Message<Void>) {
-		jokeDao.countAsync().thenAcceptAsync { count ->
+		jokesRepo.countAsync().thenAcceptAsync { count ->
 			val randomId = (1..count.toInt()).random()
 			getJoke(randomId, { joke ->
 				message.reply(JsonObject(Json.encode(joke)).encode())
@@ -83,25 +80,20 @@ class JokesJpaApiVerticle(private val clientProducer: (Vertx) -> AsyncJooqSQLCli
 	private fun handleCreateJoke(message: Message<JsonObject>) {
 		val joke = Json.mapper.readValue<JokeDto>(message.body().getJsonObject("joke").encode(), JokeDto::class.java)
 		if (joke.category == null) {
-			jokeDao.insertExecAsync(Jokes(joke.id, joke.joke, null)).thenAcceptAsync {
-				jokeDao.fetchByJokeAsync(listOf(joke.joke)).thenAcceptAsync { matchingJokes ->
+			jokesRepo.insertAsync(Jokes(joke.id, joke.joke, null)).thenAcceptAsync {
+				/*jokeDao.fetchByJokeAsync(listOf(joke.joke)).thenAcceptAsync { matchingJokes ->
 					if (matchingJokes.isEmpty()) {
 						message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
 					} else {
 						message.reply(JsonObject(Json.encode(matchingJokes[0])).encode())
 					}
-				}
+				}*/
 			}
 		} else {
-			categoryDao.client().fetch(DSL.using(categoryDao.configuration())
-					.select(CATEGORIES.ID)
-					.from(CATEGORIES)
-					.where(CATEGORIES.NAME.eq(joke.category))
-					.limit(1)
-					.query, { t -> t.getInteger("id") })
-					.thenAcceptAsync({ ids ->
-						if (ids.isEmpty()) {
-							categoryDao.insertExecAsync(Categories(0, joke.category)).thenAcceptAsync {
+			categoriesRepo.exists(joke.category!!)
+					.thenAcceptAsync({ exists ->
+						if (!exists) {
+							categoriesRepo.insertAsync(Categories(0, joke.category)).thenAcceptAsync {
 
 							}
 						} else {
@@ -112,11 +104,11 @@ class JokesJpaApiVerticle(private val clientProducer: (Vertx) -> AsyncJooqSQLCli
 	}
 
 	private fun getJoke(id: Int, successHandler: (JokeDto) -> Unit, errorHandler: () -> Unit) {
-		jokeDao.existsByIdAsync(id).thenAcceptAsync { res ->
+		jokesRepo.existsAsync(id).thenAcceptAsync { res ->
 			if (res) {
-				jokeDao.fetchOneByIdAsync(id).thenAcceptAsync { jokes ->
+				jokesRepo.findAsync(id).thenAcceptAsync { jokes ->
 					if (jokes.categoryid != null) {
-						categoryDao.fetchOneByIdAsync(jokes.categoryid).thenAcceptAsync { categories ->
+						categoriesRepo.findAsync(jokes.categoryid).thenAcceptAsync { categories ->
 							successHandler(JokeDto(jokes.id, jokes.joke, categories.name))
 						}
 					} else {
