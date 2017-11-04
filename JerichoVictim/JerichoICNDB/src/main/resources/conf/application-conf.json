@@ -1,0 +1,7 @@
+{
+  "jdbc.hostname": "database",
+  "jdbc.port": 5432,
+  "jdbc.user": "jericho",
+  "jdbc.password": "W@c[3~DV>~:]4%+5",
+  "http.port": 8080
+}

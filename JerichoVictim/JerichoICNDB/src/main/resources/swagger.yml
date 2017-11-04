@@ -1,0 +1,195 @@
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: Jericho ICNDB
+host: localhost:8080
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /jokes:
+    get:
+      tags:
+        - jokes
+      summary: Get a list of jokes
+      operationId: getJokes
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page_index
+          required: false
+          type: integer
+          format: int32
+          default: 0
+        - in: query
+          name: page_size
+          required: false
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        default:
+          description: success
+          schema:
+            $ref: '#/definitions/JokesArray'
+    post:
+      tags:
+          - jokes
+      summary: Create a new joke
+      operationId: createJoke
+      parameters:
+        - in: body
+          name: joke
+          required: true
+          schema:
+            $ref: '#/definitions/Joke'
+      responses:
+        201:
+          description: success
+          schema:
+            $ref: '#/definitions/Joke'
+
+  /jokes/{jokeId}:
+    get:
+      tags:
+        - jokes
+      summary: Get a specific joke
+      operationId: getJoke
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: jokeId
+          required: true
+          type: integer
+          format: int32
+      responses:
+        default:
+          description: success
+    put:
+      tags:
+        - jokes
+      summary: Update an existing joke
+      operationId: updateJoke
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: jokeId
+          required: true
+          type: integer
+          format: int32
+        - in: body
+          name: joke
+          required: true
+          schema:
+            $ref: '#/definitions/Joke'
+      responses:
+        default:
+          description: success
+          schema:
+            $ref: '#/definitions/Joke'
+  /joke/random:
+    get:
+      tags:
+        - jokes
+      summary: Get a random joke
+      operationId: getRandomJoke
+      produces:
+        - application/json
+      responses:
+        default:
+          description: success
+          schema:
+            $ref: '#/definitions/Joke'
+  /categories:
+    get:
+      tags:
+        - categories
+      summary: Get all categories
+      operationId: getCategories
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page_index
+          required: false
+          type: integer
+          format: int32
+          default: 0
+        - in: query
+          name: page_size
+          required: false
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        default:
+          description: success
+          schema:
+            $ref: '#/definitions/CategoriesArray'
+  /categories/{categoryId}:
+    post:
+      tags:
+        - categories
+      summary: Create a new category
+      operationId: createCategory
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categoryId
+          required: true
+          type: integer
+          format: int32
+        - in: body
+          name: category
+          required: true
+          schema:
+            $ref: '#/definitions/Category'
+      responses:
+        201:
+          description: created
+          schema:
+            $ref: '#/definitions/Category'
+
+definitions:
+  Joke:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      joke:
+        type: string
+      category:
+        type: string
+  JokesArray:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+      jokes:
+        type: array
+        items:
+          $ref: '#/definitions/Joke'
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      name:
+        type: string
+  CategoriesArray:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+      categories:
+        type: array
+        items:
+          $ref: '#/definitions/Category'
