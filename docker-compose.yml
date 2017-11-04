@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=W@c[3~DV>~:]4%+5
+      - POSTGRES_USER=jericho
+      - POSTGRES_db=jericho
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - "~/tmp/jericho-pgsql-release:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+  jericho:
+    image: baez90/jericho-icndb
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database

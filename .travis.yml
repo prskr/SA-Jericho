@@ -1,0 +1,12 @@
+sudo: required
+language: java
+
+script:
+  - gradle test distTar
+deploy:
+  provider: releases
+  api_key:
+    secure: dxEW2Bl2p1vHUoC4Y2a6xIyTCQuG26xtV5+cW50RzGUUNA5dpyiz+2Ps07jULkNCKvfq2Vgb+kDMw5o3XLXtUqRPc34t51VPJhhuIIWQbMkBEqCfFx4d44YoiB1HcHO7nqEIBx8yhVeXDDIltLobH1Y/3/dqOuIWenLGfhMV5Z2DcO0oqA62ZL6Z+Y/OvGui5AuWQdBrV1pgqjiHbCV4MkGOXe16QdCquhsVx33QErcVZ5KgF0UXrVuLUaxj7zxAgS3uZYNMLATauQCp1JTuxOIXGtpq436ftMgz2qhf/suFbK4WUNXWGo2cC8rAhJi/GNkAWEAGKHo6ufWgBzl4wsod7yreZxzv77szF5wVTKSO2/9kfDHFVpJlUFOASMsFua+hvVZD5mVCx0WX+KAJ3m/z2Isv5x6uIDzQf2XsjZzmroTX7VKT20fkPjSKjX1AMNKbDEof+CPle9j5VpV3fA6QYcFrNwba2YA9hoPwPW9xAgi6KF2DBIjYeizDTfWkJaHEgbkIvfbdYt70UpVwrOhzY3mjuuWw4B3omp7nRl4oaBEdQUiEm3MWAR3Cs4xh1EfhjoHM0aMlZTup6yvKnS6akyGylT6STZjSYrYtOLho7qt0hkSHJkZen/hksV7pPnjDt34iCwdzbOU5hw3EkJaD5wZp94B67ecscEQGbY0=
+  file: JerichoVictim/JerichoICNDB/build/distributions/JerichoICNDB-1.0-SNAPSHOT.tar
+  on:
+    repo: baez90/SA-Jericho
