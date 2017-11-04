@@ -3,7 +3,7 @@ WORKDIR jericho
 ADD . ./
 USER root
 RUN chown -R gradle:gradle /home/gradle/jericho
-RUN gradle --no-daemon -Pkotlin.incremental=false test distTar
+RUN gradle --no-daemon -Pkotlin.incremental=false -Pkotlin.compiler.execution.strategy="in-process" distTar
 
 FROM java:openjdk-8-jre-alpine
 EXPOSE 8080
