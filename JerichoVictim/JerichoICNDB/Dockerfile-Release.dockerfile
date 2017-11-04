@@ -2,8 +2,8 @@ FROM gradle:4.2.1-jdk-alpine as build
 WORKDIR jericho
 ADD . ./
 USER root
-RUN chown -R gradle:gradle /home/gradle/jericho
-RUN gradle --no-daemon -Pkotlin.incremental=false -Pkotlin.compiler.execution.strategy="in-process" distTar
+RUN chown -R gradle:gradle /home/gradle/jericho && \
+    gradle --no-daemon -Pkotlin.incremental=false -Dkotlin.compiler.execution.strategy=in-proces distTar
 
 FROM java:openjdk-8-jre-alpine
 EXPOSE 8080
