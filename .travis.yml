@@ -2,7 +2,7 @@ sudo: required
 language: java
 
 script:
-  - gradle -p JerichoVictim/JerichoICNDB/ test distTar
+  - gradle --no-daemon -p JerichoVictim/JerichoICNDB/ test distTar
 deploy:
   provider: releases
   api_key:
