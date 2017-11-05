@@ -6,10 +6,7 @@ services:
     volumes:
       - type: volume
         source: gatling-logs
-        target: /opt/gatling/results
-      - type: volume
-        source: gatling-simulations
-        target: /opt/gatling/user-files/simulations
+        target: /opt/gatling/shared-results
     configs:
       - source: RandomJokeSimulation
         target: /opt/gatling/user-files/simulations/RandomJokeSimulation.scala
@@ -42,7 +39,6 @@ networks:
       name: JerichoBattlefield
 
 volumes:
-  gatling-simulations:
   gatling-logs:
   gatling-results:
 
