@@ -1,13 +1,15 @@
 sudo: required
 language: java
-
 script:
-  - gradle --no-daemon -p JerichoVictim/JerichoICNDB/ test sonarqube distTar
+- gradle --no-daemon -p JerichoVictim/JerichoICNDB/ test sonarqube distTar
 deploy:
   provider: releases
   api_key:
     secure: dxEW2Bl2p1vHUoC4Y2a6xIyTCQuG26xtV5+cW50RzGUUNA5dpyiz+2Ps07jULkNCKvfq2Vgb+kDMw5o3XLXtUqRPc34t51VPJhhuIIWQbMkBEqCfFx4d44YoiB1HcHO7nqEIBx8yhVeXDDIltLobH1Y/3/dqOuIWenLGfhMV5Z2DcO0oqA62ZL6Z+Y/OvGui5AuWQdBrV1pgqjiHbCV4MkGOXe16QdCquhsVx33QErcVZ5KgF0UXrVuLUaxj7zxAgS3uZYNMLATauQCp1JTuxOIXGtpq436ftMgz2qhf/suFbK4WUNXWGo2cC8rAhJi/GNkAWEAGKHo6ufWgBzl4wsod7yreZxzv77szF5wVTKSO2/9kfDHFVpJlUFOASMsFua+hvVZD5mVCx0WX+KAJ3m/z2Isv5x6uIDzQf2XsjZzmroTX7VKT20fkPjSKjX1AMNKbDEof+CPle9j5VpV3fA6QYcFrNwba2YA9hoPwPW9xAgi6KF2DBIjYeizDTfWkJaHEgbkIvfbdYt70UpVwrOhzY3mjuuWw4B3omp7nRl4oaBEdQUiEm3MWAR3Cs4xh1EfhjoHM0aMlZTup6yvKnS6akyGylT6STZjSYrYtOLho7qt0hkSHJkZen/hksV7pPnjDt34iCwdzbOU5hw3EkJaD5wZp94B67ecscEQGbY0=
-  file: ./JerichoVictim/JerichoICNDB/build/distributions/JerichoICNDB-1.0-SNAPSHOT.tar
+  file: "./JerichoVictim/JerichoICNDB/build/distributions/JerichoICNDB-1.0-SNAPSHOT.tar"
   on:
     tags: true
     repo: baez90/SA-Jericho
+env:
+  global:
+    secure: MX3vA2buZQMKxmHcTZULtgbZdgOdktpTURI9HVRAmu3Mv6Um45GlF1ihfhmO6oDcy/TQgLgoZNKxRs6EttpDND0LdSHCiI444TN+2MiL+u6J37apDTgXp3g8tyFSj8nMmqKRWFRIvf8RS0OxfIvDpGOkmeuyJd/R6tsGLFqz6UAIc07cPcW+pysgv/U19ysrbYig+bTV1nbUnBhRBDaXslzGyREBOfp4WHhBsmZ0FwLaNrqEaE4GYesIvjj8IZ10cRktVTh3W6qRv7Fmo1bLP/iabxOjTKe4hf5hbFmIeucWBsb9ewQK2EsG04byjznPxH2p9H7DCPqNACetxyUME5ECzKQydxQ6oyApcGF71M2VQba/IE2e2toCzbWLe748wsIg3DNNuMaCipiP7lo14IUH4UMxt5TOLhtF3hvrjUSVmYXAEZhnUsM7+/n9RYIY2sLI5xB79eRPJ9RWa0SaYYcmVin7uOFZEhJJyNLqVBXVznkGxNr7xlH4Z1RBvgd2FU8G4Et7KueEfiSLpcxgEEW6U3h1Cu8CbjomKQ+HXdVnDMIP+07LS7hnhYlJ/V7UDFXmTMVkjrjHiW4F3CrG3yR+0+jYimEb+qetCU+QdFOtZnvzXWETVhI1XJ1vRqhI9L/Qx2p/valH6pt/WB+FuyCCREv6QDwjYU3kykS1Tak=
