@@ -13,11 +13,12 @@ services:
     ports:
       - "5432:5432"
   jericho:
-    image: baez90/jericho-icndb
+    image: baez90/jericho-victim:latest
     environment:
-      - jdbc.hostname=database
-      - jdbc.user=jericho
-      - jdbc.password=W@c[3~DV>~:]4%+5
+      - "JDBC_HOSTNAME=database"
+      - "JDBC_USER=jericho"
+      - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
+      - "VERTICLES_COUNT=4"
     ports:
       - "8080:8080"
     depends_on:

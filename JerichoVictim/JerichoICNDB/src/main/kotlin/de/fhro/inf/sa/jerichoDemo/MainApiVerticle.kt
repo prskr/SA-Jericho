@@ -7,6 +7,7 @@ import de.fhro.inf.sa.jerichoDemo.api.verticles.CategoriesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.api.verticles.JokesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.di.RepoBinder
 import de.fhro.inf.sa.jerichoDemo.model.JdbcConfig
+import de.fhro.inf.sa.jerichoDemo.model.RuntimeConfig
 import de.fhro.inf.sa.jerichoDemo.model.fromJson
 import de.fhro.inf.sa.jerichoDemo.persistence.JokesJpaApiVerticle
 import io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE
@@ -54,6 +55,7 @@ class MainApiVerticle : AbstractVerticle() {
 			} else {
 				val jsonConfig = configResult.result()
 				val dbConfig = JdbcConfig().fromJson(jsonConfig)
+				val runtimeConfig = RuntimeConfig().fromJson(jsonConfig)
 
 				try {
 					val liquibase = Liquibase(
@@ -66,7 +68,6 @@ class MainApiVerticle : AbstractVerticle() {
 					e.printStackTrace()
 				}
 
-				val port = jsonConfig.getInteger("http.port", 8080)
 				Json.mapper.registerModule(JavaTimeModule())
 				val fileSystem = vertx.fileSystem()
 				fileSystem.readFile("swagger.yml", { readFile ->
@@ -74,11 +75,11 @@ class MainApiVerticle : AbstractVerticle() {
 						val swagger = SwaggerParser().parse(readFile.result().toString(Charset.forName("utf-8")))
 						val swaggerRouter = SwaggerRouter.swaggerRouter(router, swagger, vertx.eventBus(), OperationIdServiceIdResolver())
 
-						deployVerticles(startFuture, dbConfig)
+						deployVerticles(startFuture, dbConfig, runtimeConfig)
 
 						vertx.createHttpServer()
 								.requestHandler(swaggerRouter::accept)
-								.listen(port)
+								.listen(runtimeConfig.httpPort)
 
 						startFuture?.complete()
 
@@ -90,7 +91,7 @@ class MainApiVerticle : AbstractVerticle() {
 		}
 	}
 
-	private fun deployVerticles(startFuture: Future<Void>?, dbConfig: JdbcConfig) {
+	private fun deployVerticles(startFuture: Future<Void>?, dbConfig: JdbcConfig, runtimeConfig: RuntimeConfig) {
 
 		val jooqConfig = DefaultConfiguration()
 		jooqConfig.set(SQLDialect.POSTGRES)
@@ -103,7 +104,9 @@ class MainApiVerticle : AbstractVerticle() {
 				"guice_binder" to RepoBinder::class.java.name
 		))
 
+		println("Deploying ${runtimeConfig.verticlesCount} instance/-s of each verticle")
 		val deploymentOptions = DeploymentOptions().setConfig(configJson)
+		deploymentOptions.instances = runtimeConfig.verticlesCount
 		listOf(JokesApiVerticle::class.java.name,
 				CategoriesApiVerticle::class.java.name,
 				JokesJpaApiVerticle::class.java.name)
