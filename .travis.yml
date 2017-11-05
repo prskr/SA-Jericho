@@ -1,7 +1,7 @@
 sudo: required
 language: java
 script:
-- gradle --no-daemon -p JerichoVictim/JerichoICNDB/ test sonarqube distTar -Dsonar.login=$SONAR_TOKEN
+- gradle --no-daemon -p JerichoVictim/JerichoICNDB/ test distTar
 deploy:
   provider: releases
   api_key:
