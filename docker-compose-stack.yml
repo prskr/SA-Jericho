@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  database:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=W@c[3~DV>~:]4%+5
+      - POSTGRES_USER=jericho
+      - POSTGRES_db=jericho
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - "~/tmp/jericho-pgsql-release:/var/lib/postgresql/data"
+  icndb:
+    image: baez90/sa-jericho:victim
+    environment:
+      - "JDBC_HOSTNAME=database"
+      - "JDBC_USER=jericho"
+      - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
+      - "VERTICLES_COUNT=4"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  gatling-attacker:
+    image: baez90/sa-jericho:attacker
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/results
+    depends_on:
+      - icndb
+  gatling-reporter:
+    image: baez90/sa-jericho:reporter
+
+
+volumes:
+  gatling-logs:
+  gatlink-results:
