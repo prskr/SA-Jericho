@@ -1,5 +1,5 @@
 {
-  "jdbc.hostname": "database",
+  "jdbc.hostname": "localhost",
   "jdbc.port": 5432,
   "jdbc.user": "jericho",
   "jdbc.password": "W@c[3~DV>~:]4%+5",

@@ -14,6 +14,10 @@ services:
       - "5432:5432"
   jericho:
     image: baez90/jericho-icndb
+    environment:
+      - jdbc.hostname=database
+      - jdbc.user=jericho
+      - jdbc.password=W@c[3~DV>~:]4%+5
     ports:
       - "8080:8080"
     depends_on:

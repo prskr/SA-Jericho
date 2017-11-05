@@ -6,19 +6,22 @@ import com.github.phiz71.vertx.swagger.router.SwaggerRouter
 import de.fhro.inf.sa.jerichoDemo.api.verticles.CategoriesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.api.verticles.JokesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.di.RepoBinder
+import de.fhro.inf.sa.jerichoDemo.model.JdbcConfig
+import de.fhro.inf.sa.jerichoDemo.model.fromJson
 import de.fhro.inf.sa.jerichoDemo.persistence.JokesJpaApiVerticle
+import io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE
 import io.swagger.parser.SwaggerParser
 import io.vertx.config.ConfigRetriever
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Future
+import io.vertx.core.http.HttpMethod
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.Logger
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.ext.web.Router
-import io.vertx.kotlin.config.ConfigRetrieverOptions
-import io.vertx.kotlin.config.ConfigStoreOptions
+import io.vertx.ext.web.handler.CorsHandler
 import liquibase.Liquibase
 import liquibase.database.jvm.JdbcConnection
 import liquibase.exception.LiquibaseException
@@ -39,55 +42,65 @@ class MainApiVerticle : AbstractVerticle() {
 
 	override fun start(startFuture: Future<Void>?) {
 
-		try {
-			val liquibase = Liquibase(
-					"database/db.changelog.yaml",
-					ClassLoaderResourceAccessor(),
-					JdbcConnection(DriverManager.getConnection("jdbc:postgresql://database:5432/jericho", "jericho", "W@c[3~DV>~:]4%+5"))
-			)
-			liquibase.update("production")
-		} catch (e: LiquibaseException) {
-			e.printStackTrace()
-		}
+		router.route().handler(
+				CorsHandler.create("*")
+				.allowedMethods(setOf(HttpMethod.GET, HttpMethod.POST, HttpMethod.OPTIONS, HttpMethod.PUT))
+				.allowedHeaders(setOf(CONTENT_TYPE.toString()))
+		)
 
-		val retrieverOptions = ConfigRetrieverOptions()
-				.addStore(ConfigStoreOptions(JsonObject(mapOf(Pair("path", "conf/application-conf.json"))), type = "file"))
-		val retriever = ConfigRetriever.create(vertx, retrieverOptions)
+		ConfigRetriever.create(vertx).getConfig { configResult ->
+			if (configResult.failed()) {
+				startFuture?.fail(configResult.cause())
+			} else {
+				val jsonConfig = configResult.result()
+				val dbConfig = JdbcConfig().fromJson(jsonConfig)
 
-		retriever.getConfig({ configResult ->
-			val port = configResult.result().getInteger("http.port", 8080)
-			Json.mapper.registerModule(JavaTimeModule())
-			val fileSystem = vertx.fileSystem()
-			fileSystem.readFile("swagger.yml", { readFile ->
-				if (readFile.succeeded()) {
-					val swagger = SwaggerParser().parse(readFile.result().toString(Charset.forName("utf-8")))
-					val swaggerRouter = SwaggerRouter.swaggerRouter(router, swagger, vertx.eventBus(), OperationIdServiceIdResolver())
-
-					deployVerticles(startFuture, configResult.result())
-
-					vertx.createHttpServer()
-							.requestHandler(swaggerRouter::accept)
-							.listen(port)
-					startFuture?.complete()
-
-				} else {
-					startFuture?.fail(readFile.cause())
+				try {
+					val liquibase = Liquibase(
+							"database/db.changelog.yaml",
+							ClassLoaderResourceAccessor(),
+							JdbcConnection(DriverManager.getConnection("jdbc:postgresql://${dbConfig.hostname}:${dbConfig.port}/${dbConfig.dbName}", dbConfig.userName, dbConfig.password))
+					)
+					liquibase.update("production")
+				} catch (e: LiquibaseException) {
+					e.printStackTrace()
 				}
-			})
-		})
+
+				val port = jsonConfig.getInteger("http.port", 8080)
+				Json.mapper.registerModule(JavaTimeModule())
+				val fileSystem = vertx.fileSystem()
+				fileSystem.readFile("swagger.yml", { readFile ->
+					if (readFile.succeeded()) {
+						val swagger = SwaggerParser().parse(readFile.result().toString(Charset.forName("utf-8")))
+						val swaggerRouter = SwaggerRouter.swaggerRouter(router, swagger, vertx.eventBus(), OperationIdServiceIdResolver())
+
+						deployVerticles(startFuture, dbConfig)
+
+						vertx.createHttpServer()
+								.requestHandler(swaggerRouter::accept)
+								.listen(port)
+
+						startFuture?.complete()
+
+					} else {
+						startFuture?.fail(readFile.cause())
+					}
+				})
+			}
+		}
 	}
 
-	private fun deployVerticles(startFuture: Future<Void>?, config: JsonObject) {
+	private fun deployVerticles(startFuture: Future<Void>?, dbConfig: JdbcConfig) {
 
 		val jooqConfig = DefaultConfiguration()
 		jooqConfig.set(SQLDialect.POSTGRES)
 
 		val configJson = JsonObject(mapOf(
-				Pair("host", config.getString("jdbc.hostname", "localhost")),
-				Pair("username", config.getString("jdbc.user", "jericho")),
-				Pair("password", config.getString("jdbc.password", null)),
-				Pair("database", "jericho"),
-				Pair("guice_binder", RepoBinder::class.java.name)
+				"host" to dbConfig.hostname,
+				"username" to dbConfig.userName,
+				"password" to dbConfig.password,
+				"database" to dbConfig.dbName,
+				"guice_binder" to RepoBinder::class.java.name
 		))
 
 		val deploymentOptions = DeploymentOptions().setConfig(configJson)
