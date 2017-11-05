@@ -1,0 +1,51 @@
+version: '3.4'
+
+services:
+  gatling-attacker:
+    image: baez90/jericho-attacker:2.3.0
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/results
+      - type: volume
+        source: gatling-simulations
+        target: /opt/gatling/user-files/simulations
+    configs:
+      - source: RandomJokeSimulation
+        target: /opt/gatling/user-files/simulations/RandomJokeSimulation.scala
+    networks:
+      - JerichoBattlefield
+  gatling-reporter:
+    image: baez90/jericho-reporter:2.3.0
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/results
+      - type: volume
+        source: gatling-results
+        target: /opt/gatling/html-out
+  report-viewer:
+    image: nginx:1.13-alpine
+    ports:
+      - target: 80
+        published: 50080
+        protocol: tcp
+        mode: ingress
+    volumes:
+      - type: volume
+        source: gatling-results
+        target: /usr/share/nginx/html
+
+networks:
+  JerichoBattlefield:
+    external:
+      name: JerichoBattlefield
+
+volumes:
+  gatling-simulations:
+  gatling-logs:
+  gatling-results:
+
+configs:
+  RandomJokeSimulation:
+    external: true

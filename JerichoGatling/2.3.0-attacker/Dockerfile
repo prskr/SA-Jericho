@@ -22,7 +22,8 @@ RUN apk add --update wget bash && \
     mkdir -p /tmp/archive && cd /tmp/archive && \
     unzip /tmp/downloads/gatling-$GATLING_VERSION.zip && \
     mv /tmp/archive/gatling-charts-highcharts-bundle-$GATLING_VERSION/* /opt/gatling/ && \
-    rm -rf /tmp/*
+    rm -rf /tmp/* && \
+    rm -rf /opt/gatling/user-files/simulations/computerdatabase
 
 # change context to gatling directory
 WORKDIR  /opt/gatling
