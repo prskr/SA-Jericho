@@ -4,36 +4,32 @@ import com.google.inject.Inject
 import de.fhro.inf.sa.jerichoDemo.api.error.ApiExceptions
 import de.fhro.inf.sa.jerichoDemo.model.JokeDto
 import de.fhro.inf.sa.jerichoDemo.model.JokesArrayDto
-import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.daos.CategoriesDao
-import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.daos.JokesDao
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Categories
 import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Jokes
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.ICategoriesRepository
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.IJokesRepository
-import de.fhro.inf.sa.jerichoDemo.persistence.repositories.impl.CategoriesRepository
-import de.fhro.inf.sa.jerichoDemo.persistence.repositories.impl.JokesRepository
 import de.fhro.inf.sa.jerichoDemo.utilities.anyToInt
 import de.fhro.inf.sa.jerichoDemo.utilities.random
 import io.github.jklingsporn.vertx.jooq.async.future.AsyncJooqSQLClient
 import io.vertx.core.AbstractVerticle
-import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
+import io.vertx.ext.asyncsql.AsyncSQLClient
 import io.vertx.ext.asyncsql.PostgreSQLClient
-import org.jooq.Configuration
 
 /**
  * @author Peter Kurfer
  * Created on 10/29/17.
  */
-class JokesJpaApiVerticle @Inject constructor(private val jokesRepo : IJokesRepository, private val categoriesRepo: ICategoriesRepository) : AbstractVerticle() {
+class JokesJpaApiVerticle @Inject constructor(private val jokesRepo: IJokesRepository, private val categoriesRepo: ICategoriesRepository) : AbstractVerticle() {
 
 	private lateinit var client: AsyncJooqSQLClient
-
+	private lateinit var postgresClient: AsyncSQLClient
 
 	override fun start() {
-		client = AsyncJooqSQLClient.create(vertx, PostgreSQLClient.createNonShared(vertx, config()))
+		postgresClient = PostgreSQLClient.createShared(vertx, config())
+		client = AsyncJooqSQLClient.create(vertx, postgresClient)
 		jokesRepo.setClient(client)
 		categoriesRepo.setClient(client)
 
@@ -43,6 +39,10 @@ class JokesJpaApiVerticle @Inject constructor(private val jokesRepo : IJokesRepo
 		vertx.eventBus().consumer<JsonObject>(CQRSEndpoints.GET_JOKES_JPA_ID).handler(this::handleGetJokes)
 		vertx.eventBus().consumer<JsonObject>(CQRSEndpoints.CREATE_JOKE_JPA_ID).handler(this::handleCreateJoke)
 		vertx.eventBus().consumer<JsonObject>(CQRSEndpoints.UPDATE_JOKE_JPA_ID).handler(this::handleUpdateJoke)
+	}
+
+	override fun stop() {
+		postgresClient.close()
 	}
 
 	private fun handleGetJokes(message: Message<JsonObject>) {

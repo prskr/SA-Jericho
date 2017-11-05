@@ -1,11 +1,11 @@
 #!/bin/sh
 
-REPORTS_DIR="/opt/gatling/results/"
+REPORTS_DIR="results"
 HTML_OUT="/opt/gatling/html-out"
 
 function calcChecksum()
 {
-    echo $( tar c --absolute-names $REPORTS_DIR | md5sum )
+    echo $( tar c $REPORTS_DIR | md5sum )
 }
 
 LAST_CHECKSUM=$(calcChecksum)
