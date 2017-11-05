@@ -8,6 +8,7 @@ function calcChecksum()
     echo $( tar c $REPORTS_DIR | md5sum )
 }
 
+mkdir -p "$HTML_OUT"
 LAST_CHECKSUM=$(calcChecksum)
 
 while [ 1 ]
@@ -16,9 +17,11 @@ do
     if [ "$LAST_CHECKSUM" != "$NEW_CHECKSUM" ]; then
         LAST_CHECKSUM="$NEW_CHECKSUM"
         echo "Updating HTML report..."
-        cp "$REPORTS_DIR/*.log" "$HTML_OUT/"
-        gatling.sh -ro "$HTML_OUT"
-        rm -f "$HTML_OUT/*.log"
+        cp "$REPORTS_DIR/"*.log  "$HTML_OUT/"
+        gatling.sh -ro "$HTML_OUT/"
+        if [ $? -ne 0 ]; then
+            LAST_CHECKSUM=""
+        fi
     else
         echo "Nothing to do..."
     fi
