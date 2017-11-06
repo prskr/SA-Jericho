@@ -14,6 +14,8 @@ It consists of 3 parts:
 * [Jericho Reporter](https://hub.docker.com/r/baez90/jericho-reporter/)
 * and a reports viewer (in the docker-compose file implemented by the default nginx container)
 
+![Jericho Deployment](./assets/JerichoDeployemnt.svg)
+
 # ICNDB clone
 
 The repository contains a demo application as test case for the Jericho.
