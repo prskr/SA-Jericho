@@ -1,0 +1,97 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6-rc1"
+    }
+}
+
+group 'de.fhro.inf.sa'
+version '1.0-SNAPSHOT'
+
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'application'
+apply plugin: "org.sonarqube"
+
+sourceCompatibility = 1.8
+mainClassName = "io.vertx.core.Launcher"
+def mainVerticleName = "de.fhro.inf.sa.jerichoDemo.MainApiVerticle"
+def watchForChange = 'src/**/*.*'
+
+def doOnChange
+if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+    doOnChange = '.\\gradlew classes'
+} else {
+    doOnChange = './gradlew classes'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("com.github.phiz71:vertx-swagger-router:${vertxSwaggerRouterVersion}")
+    compile("io.vertx:vertx-core:${vertxVersion}")
+    compile("io.vertx:vertx-web:${vertxVersion}")
+    compile("io.vertx:vertx-config:${vertxVersion}")
+    compile("io.vertx:vertx-lang-kotlin:${vertxVersion}")
+    compile("com.englishtown.vertx:vertx-guice:${vertxGuiceVersion}")
+    compile("org.liquibase:liquibase-core:${liquibaseVersion}")
+    compile("org.postgresql:postgresql:${pgsqlDriverVersion}")
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeJsr310Version}")
+    compile("io.github.jklingsporn:vertx-jooq-async-future:${vertxJooqAsyncFutureVersion}")
+    compile("org.jooq:jooq:${jooqVersion}")
+    testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
+    testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
+    testRuntime("org.apache.logging.log4j:log4j-core:${log4jVersion}")
+    testRuntime("org.apache.logging.log4j:log4j-jul:${log4jVersion}")
+
+}
+
+junitPlatform {
+    logManager 'org.apache.logging.log4j.jul.LogManager'
+    reportsDir file('build/test-results/junit-platform') // this is the default
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+run {
+    def cmdArgs = ""
+    if(project.hasProperty("appArgs")) {
+        cmdArgs = project.findProperty("appArgs")
+    }
+    args = [
+            'run',
+            mainVerticleName,
+            "--launcher-class=$mainClassName",
+            "--debug-jvm",
+            "--conf application-confi.json",
+            cmdArgs
+    ]
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.exclusions", "**/generated/**/*.*"
+    }
+}

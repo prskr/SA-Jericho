@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=W@c[3~DV>~:]4%+5
+      - POSTGRES_USER=jericho
+      - POSTGRES_db=jericho
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - "~/tmp/jericho-pgsql:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+  jericho:
+    image: jericho-demo
+    build:
+      context: ./
+      dockerfile: Dockerfile-Debug.dockerfile
+    environment:
+      - "JDBC_HOSTNAME=database"
+      - "JDBC_USER=jericho"
+      - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
+      - "VERTICLES_COUNT=4"
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+    entrypoint:
+      - gradle
+      - run
+      - --no-daemon
+      - --debug-jvm
+    depends_on:
+      - database

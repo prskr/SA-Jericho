@@ -1,0 +1,44 @@
+version: '3.4'
+
+services:
+  database:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=W@c[3~DV>~:]4%+5
+      - POSTGRES_USER=jericho
+      - POSTGRES_db=jericho
+    networks: 
+      - ICNDB
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+  icndb:
+    image: baez90/jericho-victim:latest
+    environment:
+      - "JDBC_HOSTNAME=database"
+      - "JDBC_USER=jericho"
+      - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
+      - "VERTICLES_COUNT=1"
+    networks:
+      - ICNDB
+      - JerichoBattlefield
+    ports:
+      - target: 8080
+        published: 58080
+        protocol: tcp
+        mode: ingress
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+    depends_on:
+      - database
+
+networks:
+  ICNDB:
+  JerichoBattlefield:
+    external:
+      name: JerichoBattlefield
