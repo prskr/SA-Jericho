@@ -1,0 +1,176 @@
+  \documentclass[twoside=false, %  doppelseitiger Druck
+    DIV=15,% DIV Faktor für Satzspiegelberechnung, sie Doku zu KOMA Script
+    BCOR=15mm, % Bindekorrektur
+    chapterprefix=false,
+    headinclude=true,
+    footinclude=false,
+    pagesize,%         write pagesize to DVI or PDF
+    fontsize=11pt,%             use this font size
+    paper=a4,%          use ISO A4
+    bibliography=totoc,%         write bibliography-chapter to table of contents
+    index=totoc,%         write index-chapter to table of contents
+%    listof=totoc,
+    cleardoublepage=plain,% \cleardoublepage generates pages with pagestyle empty
+    headings=big,%       A4/B5
+    listof=flat,%        improved list of tables
+    numbers=noenddot
+  ]{scrbook}
+
+
+\usepackage{rotating} 
+\usepackage{adjustbox}
+
+\usepackage{graphicx}
+\usepackage[table,xcdraw]{xcolor}
+
+\usepackage{fixltx2e}
+\usepackage[utf8]{inputenc}
+\usepackage{makeidx}
+\usepackage{amsfonts}
+\usepackage[slantedGreek,sc]{mathpazo}  % Schriftart Palatino
+% \usepackage{lmodern}    % statt mathpazo, falls CM Fonts verwendet werden sollen
+%\usepackage{mathptmx}    % statt mathpazo, falls Times  verwendet werden soll
+\usepackage[scaled=.95]{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{amsmath}            % standard math notation (vectors/sets/...)
+\usepackage{bm}        % standard math notation (fonts)
+\usepackage{fixmath}        % standard math notation (fonts)
+\usepackage{graphicx}
+\usepackage[facing=yes]{floatrow}       % mehrere Gleitobjekte nebeneinander/caption neben Bild/Tabelle
+\usepackage[labelfont=bf,sf,font=small,labelsep=space,format=plain]{caption}
+\usepackage{subcaption}
+\usepackage{scrpage2}
+% \usepackage{pstool}  % einbinden falls psfrag verwendet werden soll
+\usepackage{epstopdf}
+\usepackage[ngerman]{babel}
+\usepackage{ellipsis}  % Korrigiert den Weißraum um Auslassungspunkte
+\usepackage{microtype}  % optischer Randausgleich etc.
+\usepackage
+{acronym}  %Abkürzungsverzeichnis
+\usepackage{xcolor}         % z.B. für schattierte Boxen
+\usepackage{framed}			% shaded Umgebung
+\definecolor{shadecolor}{gray}{.85}%
+
+% Links im PDF
+\usepackage[colorlinks=false,
+            pdfborder={0 0 0},
+            breaklinks=true]
+            {hyperref}
+
+\definecolor{bluekeywords}{rgb}{0,0,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.64,0.08,0.08}
+\definecolor{xmlcomments}{rgb}{0.5,0.5,0.5}
+\definecolor{types}{rgb}{0.17,0.57,0.68}
+
+\usepackage{listings}
+\usepackage{url}
+\usepackage{footmisc}
+\usepackage{chngcntr}
+
+
+
+
+
+\counterwithout{footnote}{chapter}
+
+\renewcommand{\lstlistingname}{Beispiel}% Listing -> Algorithm
+\renewcommand{\lstlistlistingname}{\lstlistingname verzeichnis}%
+
+
+\lstset{language=[Sharp]C,
+	captionpos=b,
+	%numbers=left, %Nummerierung
+	%numberstyle=\tiny, % kleine Zeilennummern
+	frame=lines, % Oberhalb und unterhalb des Listings ist eine Linie
+	showspaces=false,
+	showtabs=false,
+	breaklines=true,
+	showstringspaces=false,
+	breakatwhitespace=true,
+	escapeinside={(*@}{@*)},
+	commentstyle=\color{greencomments},
+	morekeywords={partial, var, value, get, set},
+	keywordstyle=\color{bluekeywords},
+	stringstyle=\color{redstrings},
+	basicstyle=\ttfamily\small,
+}
+
+
+%\typearea[current]{calc}
+
+
+% Einstellungen für Bild-/Tabellenbeschriftung neben dem Bild
+\floatsetup[figure]{capbesideposition={inside,top}}
+\floatsetup[table]{capbesideposition={inside,top},style=plaintop}
+\renewfloatcommand{fcapside}{figure}[\capbeside][\FBwidth]
+\newfloatcommand{tcapside}{table}[\capbeside][\FBwidth]
+
+\lstdefinelanguage{Gherkin}{
+	keywords={When, Then, Given, And},
+	ndkeywords={Feature, Scenario},
+	sensitive=false,
+	comment=[l]{\#},
+	morestring=[b]',
+	morestring=[b]"
+}
+
+\newcommand*{\quelle}{% 
+	\footnotesize Quelle: 
+}
+\selectlanguage{ngerman}
+
+
+\deffootnote{1em}{1em}{%
+ \makebox[1em][l]{\thefootnotemark}}
+
+\makeindex
+
+\newcommand{\real}{\mathord{\mathrm{I\!R}}}
+
+\begin{document}
+\selectlanguage{ngerman}
+\def\figdir{figures}
+\def\tabledir{tables}
+
+\frontmatter
+
+\pagestyle{scrplain}
+\pagestyle{empty}
+
+\include{title}
+\cleardoubleemptypage
+%\include{abstract}
+\cleardoubleemptypage
+
+\pagestyle{scrplain}
+\pagenumbering{roman}
+\include{toc}
+
+\pagestyle{scrheadings}
+
+
+\addtokomafont{caption}{\small}
+
+\mainmatter
+
+\include{chapters}
+\include{abstract}
+\include{introduction}
+
+\include{docker}
+\include{gatling}
+\include{kubernetes}
+\include{vertx}
+\include{conclusion}
+
+
+\appendix
+\include{abbreviations}
+\include{append}
+\footnotesize
+
+
+\end{document}
