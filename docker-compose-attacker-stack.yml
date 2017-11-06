@@ -12,6 +12,11 @@ services:
         target: /opt/gatling/user-files/simulations/RandomJokeSimulation.scala
     networks:
       - JerichoBattlefield
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
   gatling-reporter:
     image: baez90/jericho-reporter:2.3.0
     volumes:
@@ -21,6 +26,11 @@ services:
       - type: volume
         source: gatling-results
         target: /opt/gatling/html-out
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
   report-viewer:
     image: nginx:1.13-alpine
     ports:
@@ -32,6 +42,11 @@ services:
       - type: volume
         source: gatling-results
         target: /usr/share/nginx/html
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
 
 networks:
   JerichoBattlefield:
@@ -40,7 +55,13 @@ networks:
 
 volumes:
   gatling-logs:
+    driver: nfs
+    driver_opts:
+      share: 192.168.111.30:/var/nfs/gatling-logs
   gatling-results:
+    driver: nfs
+    driver_opts:
+      share: 192.168.111.30:/var/nfs/gatling-results
 
 configs:
   RandomJokeSimulation:

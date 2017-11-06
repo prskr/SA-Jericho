@@ -20,7 +20,7 @@ services:
       - "JDBC_HOSTNAME=database"
       - "JDBC_USER=jericho"
       - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
-      - "VERTICLES_COUNT=4"
+      - "VERTICLES_COUNT=1"
     networks:
       - ICNDB
       - JerichoBattlefield
