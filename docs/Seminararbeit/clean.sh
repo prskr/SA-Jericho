@@ -1,2 +1,24 @@
 #!/bin/bash
-rm -f *.aux *.bbl *.blg *.idx *.lof *.log *.lol *.lot *.out *.run.xml *.toc *-blx.bib *.synctex.gz *.snippets *.pyg *.acn *.fdb_latexmk *.fls *.glo *.ilg *.ind *.ist
+find $(pwd) -type f \( -name "*.aux" \
+    -or -name "*.bbl" \
+    -or -name "*.blg" \
+    -or -name "*.dvi" \
+    -or -name "*.idx" \
+    -or -name "*.lof" \
+    -or -name "*.log" \
+    -or -name "*.lol" \
+    -or -name "*.lot" \
+    -or -name "*.out" \
+    -or -name "*.run.xml" \
+    -or -name "*.toc" \
+    -or -name "*-blx.bib" \
+    -or -name "*.synctex.gz" \
+    -or -name "*.snippets" \
+    -or -name "*.pyg" \
+    -or -name "*.acn" \
+    -or -name "*.fdb_latexmk" \
+    -or -name "*.fls" \
+    -or -name "*.glo" \
+    -or -name "*.ilg" \
+    -or -name "*.ind" \
+    -or -name "*.ist" \) -exec rm -f {} \;
