@@ -12,7 +12,9 @@ services:
       - "~/tmp/jericho-pgsql-release:/var/lib/postgresql/data"
     ports:
       - "5432:5432"
-  jericho:
+    networks:
+      - ICNDB-Net
+  icndb:
     image: baez90/jericho-victim:latest
     environment:
       - "JDBC_HOSTNAME=database"
@@ -23,3 +25,10 @@ services:
       - "8080:8080"
     depends_on:
       - database
+    networks:
+      - ICNDB-Net
+      - JerichoBattlefield
+networks:
+  ICNDB-Net:
+  JerichoBattlefield:
+    driver: bridge
