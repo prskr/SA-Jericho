@@ -60,7 +60,9 @@ Beispielhaft Jenkins auf Hersteller-seite vorgestellt.
 \section{Tests}
 In diesem Unterkapitel soll auf den grundsätzlichen Aufbau eines Gatling Tests eingangen werden.\\
 Gatling Tests sind in der Programmiersprache Scala\footnote{{} Scala ist eine Java-ähnliche Sprache, die auf der \ac{JVM} läuft.} implementiert.
-Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt.
+Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt. Dieser soll die Schnittstelle für das zufällige Abholen eines Witzes auf Last testen. Die grundsätzliche Funktionsweise der Schnittstelle wird an dieser Stelle vorausgesetzt. Dies muss im Vornherein durch Unit - bzw. Integrationstests sichergestellt werden. Für das Testen der Auslastung müssen allerdings einige Details über die Schnittstelle bekannt sein. So muss u.a. der Server mit zugehörigem Port, sowie der genaue Aufbau der Schnittstelle für den Entwickler einsehbar sein. Dieser Aspekt wird an dieser Stelle erwähnt, da es in größeren Unternehmen durchaus sein könnte, dass unabhängige Teams die gleiche Anwendung testen müssen. In diesem Fall hätte der Entwickler des Performance-Tests, nur die Black-Box-Sicht auf die bereits programmierte Anwendung. 
+
+Zuerst werden die notwendigen Bibliotheken über \glqq Import-Befehle\grqq{} geladen.  
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[frame=single,caption=Testabfrage auf Schnittstelle, label=testCodingSample, language=Scala]
