@@ -1,22 +1,36 @@
 \chapter{Gatling - Testing Framework}
 
+In diesem Kapitel soll auf das Testing Framework \textit{Gatling.io} eingegangen werden. Im Besonderen wird analysiert, was Performance-Tests sind und welche Vorteile diese für den Entwickler bzw. die Softwarearchitektur mit sich bringen.
+\newline
+Nachdem mögliche Einsatzgebiete von Performance-Tests analysiert wurden, wird auf die \ac{DSL} von Gatling.io eingegangen. Es werden hier die wichtigsten Befehle erläutert.
+
 %https://gatling.io/
 
-\section{Einführung}
+\section{Performance-Tests}
 
-Was ist Gatling?
-
+Performance Tests sind für jede größere Anwendung von essentieller Bedeutung. Durch diese Art der Tests können sogenannte \textit{Bottlenecks} der Anwendung ausfindig gemacht und beseitigt werden. Unter den \textit{Bottlenecks} versteht man einzelne Komponenten der programmierten Anwendung, die den gesamten Worfklow ausbremsen. Als Beispiel könnte folgende Situation dienen:
+\begin{itemize}
+    \item Eine aufwendigere Berechnung wurde in parallele Tasks ausgelagert
+    \item Jeder der Tasks muss eine Datenbankabfrage durchführen um die aktuellsten Daten zur Verfügung zu haben
+    \item Durch diese langwierige Abfrage verzögert sich die gesamte Berechnung
+\end{itemize}
+Als Bottleneck ist hier die Abfrage zur Datenbank aufzuführen, diese sollte in einen vorgelagerten Prozess abgespalten werden. Auch wenn dieses konstruierte Beispiel sehr einfach und überzogen dargestellt ist, gibt es in echten Anwendungen auch Problembereiche, die vom Entwickler nicht als solche identifiziert werden konnten. Beispielsweise könnte eine Abfrage an eine Schnittstelle unter normalen Bedingungen sofort erledigt sein, unter Last allerdings ändert sich dessen Verhalten. Ohne einen Test, der eine konstruierte Last bzw. Auslastung auf der Anwendung erzeugt, wird diese Art von Fehler nicht entdeckt. Der Administrator kann so im Vornherein die Infrastruktur anpassen, bevor die Anwendung im produktiven Umfeld ist.
+ 
 \subsection{Einsatzgebiete}
 
-%TODO
-
 \begin{itemize}
-    \item Vorhersage von Bottlenecks in Anwendung 
-    \item Live gehen ohne Angst dass Anwendung mit Last nicht klar kommt
+    \item Vorhersage von Bottlenecks in Anwendung:
+
+    Durch einen Test, der eine simulierte Auslastung auf der Anwendung erzeugt, können einzelne Problembereiche der Anwendung aufgezeigt werden.
+
+    \item Skalierung der Anwendung:
+
+    Durch Performance-Tests kann eine beliebige Anzahl an Usern auf der Anwendung simuliert werden. Es könnte beispielsweise die Skalierung der Anwendung erprobt werden. Hier wird nicht nur die Softwarearchitektur der Anwendung getestet, sondern auch die IT- Infrastruktur. Durch die genannten Tests könnte beispielsweise aufkommen, dass ein Load-Balancer für eine erwartete Last von 1 Million Benutzern nicht ausreichend ist.
     \item Benutzer Bedienung verbessern -- Latenz Zeiten verringern = schnelleres Feedback für den User
     \item langfristig Verbesserung / Optimierung der Software Architektur  --> wie gut skaliert die Anwendung?
 
 \end{itemize}
+
 
 \section{DSL}
 
@@ -33,6 +47,9 @@ Welche Metriken sind verfügbar ?
 Wie werden diese gesammelt?
 Wie werden diese interpretiert?
 
+
+
+
 \section{Continous Integration}
 
 Wie kann Gatling in den bestehenden / zukünftigen Continous Integration Prozess eingebunden werden?
@@ -41,8 +58,36 @@ Beispielhaft Jenkins auf Hersteller-seite vorgestellt.
 
 
 \section{Tests}
+In diesem Unterkapitel soll auf den grundsätzlichen Aufbau eines Gatling Tests eingangen werden.\\
+Gatling Tests sind in der Programmiersprache Scala\footnote{{} Scala ist eine Java-ähnliche Sprache, die auf der \ac{JVM} läuft.} implementiert.
+Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt.
 
-Code Beispiel eines Tests zeigen
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[frame=single,caption=Testabfrage auf Schnittstelle, label=testCodingSample, language=Scala]
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+
+class RandomJokeSimulation extends Simulation {
+    val httpConf = http
+        .baseURL("http://192.168.111.20:58080")
+        .acceptHeader("application/json")
+        .acceptEncodingHeader("gzip, deflate")
+        .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
+
+    val scn = scenario("RandomJokeSimulation").repeat(100) {
+        exec(http("getRandomJoke")
+        .get("/api/v1/joke/random"))
+    }    
+
+    setUp(
+        scn.inject(atOnceUsers(100))
+    ).protocols(httpConf)
+}
+\end{lstlisting}
+\end{minipage}
+
+
 
 Unterschiede Lasttests zu Unit / Integrationtests usw.
 %https://jaxenter.de/mit-dem-testen-von-anwendungen-ist-es-so-eine-last-erst-recht-mit-lasttests-27564
