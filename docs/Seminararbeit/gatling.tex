@@ -65,6 +65,23 @@ Wie werden diese interpretiert?
 
 \section{Continous Integration}
 
+\begin{figure}
+	{\caption{Continous Integration Prozess}
+		\label{fig:continousIntegration}}
+	{\includegraphics[scale=0.8]{\figdir/continuous-testing}}
+\end{figure}
+
+
+Der Einsatz von Buildservern in einer Continous Integration Umgebung gehört mittlerweile zu den Standard Werkzeugen eines Entwicklerteams. Aber was ist Continous Integration und wie können Lasttests in diesen Prozess eingebunden werden?
+
+\begin{figure}
+	{\caption{Ergebnis der Analyse am Buildserver}
+		\label{fig:jenkinsBuildResult}}
+	{\includegraphics[scale=0.3]{\figdir/jenkinsResult}}\\~\\
+				\tiny{\quelle\url{https://gatling.io/wp-content/uploads/2016/12/jenkins2.png}}
+\end{figure}
+Abbildung \ref{fig:jenkinsBuildResult} zeigt einen Graphen, der auf dem Buildserver \glqq Jenkins\grqq{} während eines Buildvorgangs generiert wurde. Die Grafik zeigt den \glqq Performance Trend\grqq{} einer Anwendung über mehrere Analysen hinweg. Wie aus dem Graph entnommen werden kann, gab es zwischen dem achten und zehnten Buildvorgang stetige Performance Probleme, die aber dann im elften Buildvorgang gelöst werden konnten. So wurden potentielle Bottlenecks, die unabsichtlich durch den Entwickler eingebaut wurden entdeckt und konnten nach dem Buildvorgang behoben werden. Die Anwendung musste nicht erst produktiv gehen, damit diese Probleme erkannt wurden.
+
 Wie kann Gatling in den bestehenden / zukünftigen Continous Integration Prozess eingebunden werden?
 
 Beispielhaft Jenkins auf Hersteller-seite vorgestellt.
@@ -73,9 +90,10 @@ Beispielhaft Jenkins auf Hersteller-seite vorgestellt.
 \section{Tests}
 In diesem Unterkapitel soll auf den grundsätzlichen Aufbau eines Gatling Tests eingangen werden.\\
 Gatling Tests sind in der Programmiersprache Scala\footnote{{} Scala ist eine Java-ähnliche Sprache, die auf der \ac{JVM} läuft.} implementiert.
-Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt. Dieser soll die Schnittstelle für das zufällige Abholen eines Witzes auf Last testen. Die grundsätzliche Funktionsweise der Schnittstelle wird an dieser Stelle vorausgesetzt. Dies muss im Vornherein durch Unit - bzw. Integrationstests sichergestellt werden. Für das Testen der Auslastung müssen allerdings einige Details über die Schnittstelle bekannt sein. So muss u.a. der Server mit zugehörigem Port, sowie der genaue Aufbau der Schnittstelle für den Entwickler einsehbar sein. Dieser Aspekt wird an dieser Stelle erwähnt, da es in größeren Unternehmen durchaus sein könnte, dass unabhängige Teams die gleiche Anwendung testen müssen. In diesem Fall hätte der Entwickler des Performance-Tests, nur die Black-Box-Sicht auf die bereits programmierte Anwendung. 
-
-Zuerst werden die notwendigen Bibliotheken über \glqq Import-Befehle\grqq{} geladen.  
+Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt. Dieser soll die Schnittstelle für das zufällige Abholen eines Witzes auf Last testen. Die grundsätzliche Funktionsweise der Schnittstelle wird an dieser Stelle vorausgesetzt. Dies muss im Vornherein durch Unit - bzw. Integrationstests sichergestellt werden. Für das Testen der Auslastung müssen allerdings einige Details über die Schnittstelle bekannt sein. So muss u.a. der Server mit zugehörigem Port, sowie der genaue Aufbau der Schnittstelle für den Entwickler einsehbar sein. Dieser Aspekt wird an dieser Stelle erwähnt, da es in größeren Unternehmen durchaus sein könnte, dass unabhängige Teams die gleiche Anwendung testen müssen. In diesem Fall hätte der Entwickler des Performance-Tests, nur die Black-Box-Sicht auf die bereits programmierte Anwendung. Das Code Beispiel \ref{testCodingSample} soll nun im Detail erläutert werden.\\
+Zuerst werden die notwendigen Bibliotheken über \glqq Import-Befehle\grqq{} geladen. Die Klasse \glqq RandomJokeSimulation\grqq{} erbt von der definierten Klasse \glqq Simulation\grqq{}.\footnote{{} Jeder Gatling.io Test muss von der Simulation Klasse erben.} Anschließend wird die Verbindung konfiguriert, sowie der notwendige Test-Request zusammengebaut. In diesem Beispiel läuft die Anwendung im internen Netz an der Adresse \glqq http://192.168.111.20\grqq{} auf Port 58080. Damit der Request vom Server akzeptiert wird, werden die notwendigen Header gesetzt. \\
+Anschließend wird die zu testende Logik, in Gatling.io \glqq Scenario\grqq{} genannt, implementiert. Das Scenario bekommt einen Namen zugewiesen und die Aufforderung, wie oft dieses ausgeführt werden soll. Zudem wird der genaue Pfad der Schnittstelle definiert und die \ac{HTTP} Methode, die auf die \ac{REST} Schnittstelle ausgeführt werden soll, ausgewählt.\\
+Der Lasttest soll möglichst unter den Bedingungen durchgeführt werden, die auch im produktiven System aktiv sind. So ist es unrealistisch anzunehmen dass 1000 Benutzer exakt zeitgleich die Abfrage auf die Schnittstelle absetzen. Es ist vielmehr anzunehmen, dass die Benutzeranzahl mit zunehmender Laufzeit des Programms ansteigen wird. Genau diese Funktionalität bietet Gatling.io an. Zur Test Laufzeit können kontinuierlich, dies ist konfigurierbar, neue Benutzer erstellt werden, die auch Abfragen auf die Schnittstelle absetzen. So kann ein realistischer Use-Case getestet werden.\\ 
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[frame=single,caption=Testabfrage auf Schnittstelle, label=testCodingSample, language=Scala]
