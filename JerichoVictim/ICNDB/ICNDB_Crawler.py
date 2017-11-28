@@ -23,7 +23,7 @@ def crawl_all_jokes():
             # remove id value
             joke_body['value'].pop('id')
             jokes.append(joke_body['value'])
-        if joke_id >= 1000:
+        if joke_id >= (jokes_count * 2): #ids are not in continuous order
             break
     return jokes
 

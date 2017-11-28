@@ -8,6 +8,7 @@ function calcChecksum()
     echo $( tar c $REPORTS_DIR | md5sum )
 }
 
+rm -rf "$HTML_OUT/"*
 mkdir -p "$HTML_OUT"
 LAST_CHECKSUM=$(calcChecksum)
 
