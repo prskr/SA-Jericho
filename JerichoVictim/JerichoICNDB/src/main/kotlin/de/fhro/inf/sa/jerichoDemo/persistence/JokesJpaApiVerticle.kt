@@ -68,14 +68,8 @@ class JokesJpaApiVerticle @Inject constructor(private val jokesRepo: IJokesRepos
 	}
 
 	private fun handleGetRandomJoke(message: Message<Void>) {
-		jokesRepo.countAsync().thenAcceptAsync { count ->
-			val randomId = (1..count.toInt()).random()
-			getJoke(randomId, { joke ->
-				message.reply(JsonObject(Json.encode(joke)).encode())
-			}, {
-				message.fail(404, "Joke does not exist.")
-			})
-
+		jokesRepo.getRandomJoke().thenAcceptAsync { joke ->
+			message.reply(JsonObject(Json.encode(joke)).encode())
 		}
 	}
 

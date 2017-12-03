@@ -17,6 +17,14 @@ import java.util.concurrent.CompletableFuture
  */
 class JokesRepository(jokesDao: JokesDao) : RepositoryBase<Jokes, JokesRecord, Int>(jokesDao, { j -> j.id }), IJokesRepository {
 
+	override fun getRandomJoke(): CompletableFuture<JokeDto> {
+		return dao.client().fetchOne(
+				DSL.using(dao.configuration())
+						.query("SELECT * FROM random_joke()"),
+				{ t -> JokeDto(joke = t.getString("joke_text"), category = t.getString("category_text")) }
+		)
+	}
+
 	override fun findByJokeAsync(joke: String): CompletableFuture<List<JokeDto>> {
 		return dao.client().fetch(
 				DSL.using(dao.configuration())

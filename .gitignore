@@ -86,3 +86,19 @@ C:\\nppdf32Log\\debuglog.txt
 
 *codealike.json
 
+# Custom ignores
+*.dvi
+*.idx
+*.lof
+*.lol
+*.lot
+*.run.xml
+*-blx.bib
+*.snippets
+*.pyg
+*.acn
+*.flx
+*.glo
+*.ilg
+*.ind
+*.ist

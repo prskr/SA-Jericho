@@ -1,6 +1,6 @@
 databaseChangeLog:
     - changeSet:
-        id: create_jokes_table
+        id: create_table_structure
         author: Peter Kurfer
         changes:
             -  createTable:
@@ -40,6 +40,18 @@ databaseChangeLog:
                           nullable: true
                           foreignKeyName: fk_category_id
                           references: categories(id)
+    - changeSet:
+        id: create_stored_procedures
+        author: Peter Kurfer
+        changes:
+            - createProcedure:
+                encoding: utf8
+                procedureName: GetRandomJoke
+                path: database/scripts/random_joke.sql
+            - createProcedure:
+                encoding: utf8
+                procedureName: GetRandomJokeWithfilter
+                path: database/scripts/random_joke_with_filter.sql
     - changeSet:
         id: load_categories_data
         author: Peter Kurfer

@@ -12,4 +12,6 @@ interface IJokesRepository : IRepository<Jokes, Int> {
 	fun findAllIncludingCategory(pageIndex: Int, pageSize: Int): CompletableFuture<List<JokeDto>>
 
 	fun findByJokeAsync(joke: String): CompletableFuture<List<JokeDto>>
+
+	fun getRandomJoke(): CompletableFuture<JokeDto>
 }
