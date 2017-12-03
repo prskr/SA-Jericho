@@ -1,4 +1,4 @@
-FROM gradle:4.2.1-jdk-alpine as build
+FROM gradle:4.3.1-jdk-alpine as build
 WORKDIR jericho
 ADD . ./
 USER root
