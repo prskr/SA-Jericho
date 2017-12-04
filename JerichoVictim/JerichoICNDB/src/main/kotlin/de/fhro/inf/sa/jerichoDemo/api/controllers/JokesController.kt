@@ -4,8 +4,7 @@ import de.fhro.inf.sa.jerichoDemo.api.error.ApiExceptions
 import de.fhro.inf.sa.jerichoDemo.api.error.MainApiException
 import de.fhro.inf.sa.jerichoDemo.model.JokeDto
 import de.fhro.inf.sa.jerichoDemo.persistence.CQRSEndpoints
-import io.vertx.core.AsyncResult
-import io.vertx.core.Handler
+import de.fhro.inf.sa.jerichoDemo.utilities.addContentTypeJson
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.eventbus.EventBus
 import io.vertx.core.eventbus.Message
@@ -30,7 +29,7 @@ class JokesController {
 
 			eventBus?.send<JsonObject>(CQRSEndpoints.GET_JOKE_JPA_ID, jokeId, { result ->
 				if (result.succeeded()) {
-					message.reply(result.result().body(), DeliveryOptions().addHeader("Content-Type", "application/json"))
+					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				} else {
 					manageError(message, result.cause(), "getJoke")
 				}
@@ -45,7 +44,7 @@ class JokesController {
 		try {
 			eventBus?.send<JsonObject>(CQRSEndpoints.GET_JOKES_JPA_ID, message.body(), { result ->
 				if (result.succeeded())
-					message.reply(result.result().body(), DeliveryOptions().addHeader("Content-Type", "application/json"))
+					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				else
 					manageError(message, result.cause(), "getJokes")
 			})
@@ -59,7 +58,7 @@ class JokesController {
 		try {
 			eventBus?.send<JsonObject>(CQRSEndpoints.GET_RANDOM_JOKE_JPA_ID, null, { result ->
 				if (result.succeeded()) {
-					message.reply(result.result().body(), DeliveryOptions().addHeader("Content-Type", "application/json"))
+					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				} else {
 					manageError(message, result.cause(), "getRandomJoke")
 				}
@@ -87,7 +86,7 @@ class JokesController {
 			val joke = Json.mapper.readValue(message.body().getString("joke"), JokeDto::class.java)
 			eventBus?.send<JsonObject>(CQRSEndpoints.UPDATE_JOKE_JPA_ID, message, { result ->
 				if(result.succeeded()) {
-					message.reply(result.result().body())
+					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				}else {
 					val cause = result.cause()
 					manageError(message, cause, "updateJoke")
