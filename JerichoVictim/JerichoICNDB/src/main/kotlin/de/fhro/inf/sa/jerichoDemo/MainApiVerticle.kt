@@ -1,8 +1,7 @@
 package de.fhro.inf.sa.jerichoDemo
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.github.phiz71.vertx.swagger.router.OperationIdServiceIdResolver
-import com.github.phiz71.vertx.swagger.router.SwaggerRouter
+import de.fhro.inf.sa.jerichoDemo.api.addRoutes
 import de.fhro.inf.sa.jerichoDemo.api.verticles.CategoriesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.api.verticles.JokesApiVerticle
 import de.fhro.inf.sa.jerichoDemo.di.RepoBinder
@@ -11,11 +10,8 @@ import de.fhro.inf.sa.jerichoDemo.model.RuntimeConfig
 import de.fhro.inf.sa.jerichoDemo.model.fromJson
 import de.fhro.inf.sa.jerichoDemo.persistence.JokesJpaApiVerticle
 import io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE
-import io.swagger.parser.SwaggerParser
 import io.vertx.config.ConfigRetriever
-import io.vertx.core.AbstractVerticle
-import io.vertx.core.DeploymentOptions
-import io.vertx.core.Future
+import io.vertx.core.*
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
@@ -29,7 +25,6 @@ import liquibase.exception.LiquibaseException
 import liquibase.resource.ClassLoaderResourceAccessor
 import org.jooq.SQLDialect
 import org.jooq.impl.DefaultConfiguration
-import java.nio.charset.Charset
 import java.sql.DriverManager
 
 /**
@@ -69,24 +64,16 @@ class MainApiVerticle : AbstractVerticle() {
 				}
 
 				Json.mapper.registerModule(JavaTimeModule())
-				val fileSystem = vertx.fileSystem()
-				fileSystem.readFile("swagger.yml", { readFile ->
-					if (readFile.succeeded()) {
-						val swagger = SwaggerParser().parse(readFile.result().toString(Charset.forName("utf-8")))
-						val swaggerRouter = SwaggerRouter.swaggerRouter(router, swagger, vertx.eventBus(), OperationIdServiceIdResolver())
 
-						deployVerticles(startFuture, dbConfig, runtimeConfig)
+				router.addRoutes(vertx)
 
-						vertx.createHttpServer()
-								.requestHandler(swaggerRouter::accept)
-								.listen(runtimeConfig.httpPort)
+				deployVerticles(startFuture, dbConfig, runtimeConfig)
 
-						startFuture?.complete()
+				vertx.createHttpServer()
+						.requestHandler(router::accept)
+						.listen(runtimeConfig.httpPort)
 
-					} else {
-						startFuture?.fail(readFile.cause())
-					}
-				})
+				startFuture?.complete()
 			}
 		}
 	}
