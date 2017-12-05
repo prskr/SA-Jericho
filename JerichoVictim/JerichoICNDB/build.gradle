@@ -39,24 +39,25 @@ repositories {
 }
 
 dependencies {
-    compile("io.vertx:vertx-core:${vertxVersion}")
-    compile("io.vertx:vertx-web:${vertxVersion}")
-    compile("io.vertx:vertx-config:${vertxVersion}")
-    compile("io.vertx:vertx-lang-kotlin:${vertxVersion}")
-    compile("com.englishtown.vertx:vertx-guice:${vertxGuiceVersion}")
-    compile("org.liquibase:liquibase-core:${liquibaseVersion}")
-    compile("org.postgresql:postgresql:${pgsqlDriverVersion}")
+    compile("io.vertx:vertx-core:${vertx_version}")
+    compile("io.vertx:vertx-web:${vertx_version}")
+    compile("io.vertx:vertx-config:${vertx_version}")
+    compile("io.vertx:vertx-lang-kotlin:${vertx_version}")
+    compile("com.englishtown.vertx:vertx-guice:${vertx_guice_version}")
+    compile("org.liquibase:liquibase-core:${liquibase_version}")
+    compile("org.postgresql:postgresql:${pgsql_driver_version}")
     compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeJsr310Version}")
-    compile("io.github.jklingsporn:vertx-jooq-async-future:${vertxJooqAsyncFutureVersion}")
-    compile("org.jooq:jooq:${jooqVersion}")
-    testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
-    testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
-    testRuntime("org.apache.logging.log4j:log4j-core:${log4jVersion}")
-    testRuntime("org.apache.logging.log4j:log4j-jul:${log4jVersion}")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jackson_datatype_jsr310_version}")
+    compile("io.github.jklingsporn:vertx-jooq-async-future:${vertx_jooq_async_future_version}")
+    compile("org.jooq:jooq:${jooq_version}")
+    compile("org.slf4j:slf4j-api:${slf4j_version}")
+    testCompile("org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_version}")
+    testRuntime("org.junit.platform:junit-platform-launcher:${junit_platform_version}")
+    testRuntime("org.apache.logging.log4j:log4j-core:${log4j_version}")
+    testRuntime("org.apache.logging.log4j:log4j-jul:${log4j_version}")
 
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
 }
 
 junitPlatform {
