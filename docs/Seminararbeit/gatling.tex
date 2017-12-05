@@ -2,7 +2,8 @@
 
 In diesem Kapitel soll auf das Testing Framework \textit{Gatling.io} eingegangen werden. Im Besonderen wird analysiert, was Performance-Tests sind und welche Vorteile diese für den Entwickler bzw. die Softwarearchitektur mit sich bringen.
 \newline
-Nachdem mögliche Einsatzgebiete von Performance-Tests analysiert wurden, wird auf die \ac{DSL} von Gatling.io eingegangen. Es werden hier die wichtigsten Befehle erläutert.
+Nachdem mögliche Einsatzgebiete von Performance-Tests analysiert wurden, wird auf die \ac{DSL} von Gatling.io eingegangen. Es werden hier die wichtigsten Befehle erläutert.\\
+Gatling wurde am 20. Dezember 2011 erstmalig veröffentlicht und ist hauptsächlich in der Programmiersprache Scala implementiert. Laut der Plattform \textit{Open Hub}\footnote{{} Open Hub bietet eine detaillierte Übersicht über Open Source Projekte bzgl. der Aktivitäten, verwendeten Programmiersprachen usw. (vgl. \url{https://www.openhub.net})} hat Gatling über 50k Zeilen an Code bei mehr als 100 Contributors\footnote{{} Als Contributor ist ein Entwickler yu verstehen, der an dem Projekt selbstständig und freiwillig arbeitet.}.\cite{TheGatli41:online} Das Tool wurde unter der Apache License 2.0 lizenziert.
 
 %https://gatling.io/
 
@@ -11,22 +12,31 @@ Nachdem mögliche Einsatzgebiete von Performance-Tests analysiert wurden, wird a
 Performance Tests sind für jede größere Anwendung von essentieller Bedeutung. Durch diese Art der Tests können sogenannte \textit{Bottlenecks} der Anwendung ausfindig gemacht und beseitigt werden. Unter den \textit{Bottlenecks} versteht man einzelne Komponenten der programmierten Anwendung, die den gesamten Worfklow ausbremsen. Als Beispiel könnte folgende Situation dienen:
 \begin{itemize}
     \item Eine aufwendigere Berechnung wurde in parallele Tasks ausgelagert
-    \item Jeder der Tasks muss eine Datenbankabfrage durchführen um die aktuellsten Daten zur Verfügung zu haben
+    \item Jeder der Tasks muss eine Datenbankabfrage durchführen, damit die aktuellsten Daten zur Verfügung stehen
     \item Durch diese langwierige Abfrage verzögert sich die gesamte Berechnung
 \end{itemize}
-Als Bottleneck ist hier die Abfrage zur Datenbank aufzuführen, diese sollte in einen vorgelagerten Prozess abgespalten werden. Auch wenn dieses konstruierte Beispiel sehr einfach und überzogen dargestellt ist, gibt es in echten Anwendungen auch Problembereiche, die vom Entwickler nicht als solche identifiziert werden konnten. Beispielsweise könnte eine Abfrage an eine Schnittstelle unter normalen Bedingungen sofort erledigt sein, unter Last allerdings ändert sich dessen Verhalten. Ohne einen Test, der eine konstruierte Last bzw. Auslastung auf der Anwendung erzeugt, wird diese Art von Fehler nicht entdeckt. Der Administrator kann so im Vornherein die Infrastruktur anpassen, bevor die Anwendung im produktiven Umfeld ist.
+Als Bottleneck ist hier die Abfrage zur Datenbank aufzuführen, diese sollte in einen vorgelagerten Prozess abgespalten werden. Auch wenn dieses konstruierte Beispiel sehr einfach und überzogen dargestellt ist, gibt es in echten Anwendungen auch Problembereiche, die vom Entwickler nicht als solche identifiziert werden konnten. Beispielsweise könnte eine Abfrage an eine Schnittstelle unter normalen Bedingungen sofort erledigt sein, unter Last allerdings ändert sich dessen Verhalten. Ohne einen Test, der eine konstruierte Last bzw. Auslastung auf der Anwendung erzeugt, wird diese Art von Fehler nicht entdeckt. Der Administrator kann so vorbeugend im Vornherein die Infrastruktur anpassen, bevor die Anwendung im produktiven Umfeld ist.
  
 \subsection{Einsatzgebiete}
 
+Als Einsatzgebiete sind zusammenfassend zu nennen:
+
 \begin{itemize}
-    \item Vorhersage von Bottlenecks in Anwendung:
-    
+    \item Vorhersage von Bottlenecks in Anwendungen:
+   
     Durch einen Test, der eine simulierte Auslastung auf der Anwendung erzeugt, können einzelne Problembereiche der Anwendung aufgezeigt werden.
+    
     \item Skalierung der Anwendung:
 
-    Durch Performance-Tests kann eine beliebige Anzahl an Usern auf der Anwendung simuliert werden. Es könnte beispielsweise die Skalierung der Anwendung erprobt werden. Hier wird nicht nur die Softwarearchitektur der Anwendung getestet, sondern auch die IT- Infrastruktur. Durch die genannten Tests könnte beispielsweise aufkommen, dass ein Load-Balancer für eine erwartete Last von 1 Million Benutzern nicht ausreichend ist.
-    \item Benutzer Bedienung verbessern -- Latenz Zeiten verringern = schnelleres Feedback für den User
-    \item langfristig Verbesserung / Optimierung der Software Architektur  --> wie gut skaliert die Anwendung?
+    Durch Performance-Tests kann eine beliebige Anzahl an Benutzern auf der Anwendung simuliert werden. Es könnte beispielsweise die Skalierung der Anwendung erprobt werden. Hier wird nicht nur die Softwarearchitektur des Programms getestet, sondern auch die IT-Infrastruktur. Durch die genannten Tests könnte beispielsweise aufkommen, dass ein Load-Balancer für eine erwartete Last von 1 Million Benutzern nicht ausreichend ist.
+    
+    \item Feedback für Benutzer verbessern:
+    
+    Der Benutzer der Anwendung bekommt ein besseres Produkt mit schnelleren Antwortzeiten, was insgesamt die Zufriedenheit beim Kunden / Benutzer verbessert.    
+    
+    \item Verbesserung / Optimierung der Software Architektur:
+    
+    Durch Erfahrungswerte aus vorhergehenden Tests kann langfristig die Softwarearchitektur angepasst bzw. verändert werden. Die Anwendung kann skalierbarer entworfen und geplant werden. Auch das Programmierverhalten der Entwickler wird dadurch positiv beeinflusst. Durch Erfahrungswerte können Fehler schon während der Entwicklungszeit aufgedeckt und verhindert werden. So werden Optimierungen während der Entwicklungsphase durchgeführt. 
 
 \end{itemize}
 
@@ -120,12 +130,9 @@ class RandomJokeSimulation extends Simulation {
 \end{lstlisting}
 \end{minipage}
 
+Als Alternative zu Gatling.io ist \textit{Apache JMeter} zu nennen.\footnote{{} vgl. \url{https://jmeter.apache.org/}} JMeter wurde im Jahr 1998 erstmalig veröffentlicht und wurde hauptsächlich in Java implementiert. 
 
-
-Unterschiede Lasttests zu Unit / Integrationtests usw.
-%https://jaxenter.de/mit-dem-testen-von-anwendungen-ist-es-so-eine-last-erst-recht-mit-lasttests-27564
-
-
+Vergleich \cite{JMetervs63:online}
 
 Allgemein Alternative mit JMeter
 %https://www.heise.de/developer/artikel/Last-und-Performance-Tests-mit-JMeter-oder-Gatling-3648505.html
@@ -136,7 +143,7 @@ JMeter vs Gatling
 
 \section{Zwischenfazit Lasttests}
 
-Performance oder Lasttests sind notwendig um eine stabile Anwendung bzw. API zu erreichen.
-Langfristig wird sich die Architektur bzw. der Programmierprozess verbessern wenn die Ergebnisse der Tests analysiert, ausgewertet und auch für zukünftige Entwicklung berücksichtigt werden.
+Performance- oder Lasttests sind notwendig um eine stabile Anwendung bzw. API zu erreichen.
+Langfristig wird sich die Architektur bzw. der Programmierprozess verbessern wenn die Ergebnisse der Tests analysiert, ausgewertet und auch für zukünftige Entwicklung berücksichtigt werden. Durch die Integration in eine Continuous  Integration Umgebung wird ein schnelles Feedback der Tests an die Entwickler garantiert und diese können noch während der Entwicklungsphase aufkommende negative Trends bzgl. der Antwortzeiten / Performance der Anwendung analysieren und beheben. So wird garantiert dass eine umfangreich getestete Software keine bösen Überraschungen bei aufkommender Last zeigt.
 
 
