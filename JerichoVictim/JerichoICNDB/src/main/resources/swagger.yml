@@ -51,7 +51,7 @@ paths:
       responses:
         default:
           description: success
-  /joke/random:
+  /jokes/random:
     get:
       tags:
         - jokes

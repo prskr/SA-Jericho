@@ -11,7 +11,7 @@ class RandomJokeSimulation extends Simulation {
 
     val scn = scenario("RandomJokeSimulation").repeat(100) {
         exec(http("getRandomJoke")
-        .get("/api/v1/joke/random"))
+        .get("/api/v1/jokes/random"))
     }    
 
     setUp(
