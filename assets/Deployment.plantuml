@@ -1,32 +1,37 @@
 @startuml JerichoDeployemnt
 
-node DockerHost {
-    node ICNDB {
-        node "Vert.X App" {
-        }
-        node "PostgreSQL DB" {
-        }
-    "Vert.X App" --> "PostgreSQL DB": DAL
-    }
-    node Jericho {
+actor Browser
 
-        node Jericho-Attacker {
-        }
-        node Jericho-Reporter {
-        }
-        node Report-Viewer {
-        }
+folder DockerHost {
 
-        "Jericho-Attacker" --> "Jericho-Reporter" : Simulation Logs
-        "Jericho-Reporter" --> "Report-Viewer": HTML report
-    }
+    node ICNDB [
+    ICNDB
+    ===
+    Vert.X App
+    ---
+    JVM
+    ]
 
-"Jericho-Attacker" --> "Vert.X App" : Stress test
+    database PostgreSQL [
+        PostgreSQL DB
+        ---
+        Jokes
+    ]
+
+    node Jericho [
+    Jericho
+    ===
+    Jericho-Attacker (Gattling)
+    ---
+    Jericho-Reporter (Gattling)
+    ---
+    Report-Viewer (Nginx)
+    ]
+
 }
 
-node Browser {
-}
-
-Browser --> "Report-Viewer" : Get results
+ICNDB --> PostgreSQL: Data access layer
+Jericho --> ICNDB: Stress test
+Browser --> Jericho: Display report
 
 @enduml
