@@ -16,7 +16,7 @@ It consists of 3 parts:
 
 ![Jericho Deployment](./assets/JerichoDeployemnt.svg)
 
-# ICNDB clone
+## ICNDB clone
 
 The repository contains a demo application as test case for the Jericho.
 It's a clone of the **I**nternet **C**huck **N**orris **D**ata**b**ase (ICNDB).
@@ -26,9 +26,9 @@ It defines the required PostgreSQL database service and configures both services
 
 The ICNDB clone is also available as [Docker image](https://hub.docker.com/r/baez90/jericho-victim/).
 
-# Jericho
+## Jericho
 
-## Jericho Attacker
+### Jericho Attacker
 
 The Dockerfile for the attacker image is located under _JerichoGatling/2.3.0-attacker/_.
 The folder contains the script [attack.sh](./JerichoGatling/2.3.0-attacker/attack.sh) which controls the attack node.
@@ -41,13 +41,13 @@ When the attack node is started, the _attack.sh_ script is started and starts a 
 
 The _-m_-Switch requires that in the folder _/opt/gatling/user-files/simulations_ is just **one** simulation file!
 
-### Simulation files
+#### Simulation files
 
-#### Docker-Compose
+##### Docker-Compose
 
 If you're running Jericho within Docker-Compose you can just mount your simulation file to the folder _/opt/gatling/user-files/simulations_ and thats it!
 
-#### Docker Swarm
+##### Docker Swarm
 
 If you want to run Jericho within Docker Swarm the easiest way to get a simulation file into all attack nodes is to create a config file (`docker config create <name> <path/to/file>`) and mount the configuration afterwards into the attack nodes.
 That can be accomplished like in the given _docker-compose-attacker-stack.yml_:
@@ -66,7 +66,7 @@ configs:
     external: true
 ```
 
-### Shared volumes
+#### Shared volumes
 
 Jericho needs some shared volumes:
 
@@ -77,7 +77,7 @@ The volume shared between attack nodes and reporter (let's call it _gatling-logs
 
 The volume shared between the reporter node and the report viewer has to be mounted to the folder _/opt/gatling/html-out_ on the reporter node and to the folder _/usr/share/nginx/html_ if you're using nginx as web server.
 
-#### Docker-Compose
+##### Docker-Compose
 
 If you want to run Jericho within Docker-Compose you'll have no problems by just declaring the volumes in the global scope of your Docker-Compose file:
 
@@ -89,7 +89,7 @@ volumes:
 
 Because the containers are running on the same host, the "in memory" volumes are shared across all containers.
 
-#### Docker Swarm
+##### Docker Swarm
 
 If you want to run Jericho within Docker Swarm you have 2 options:
 

@@ -1,0 +1,9 @@
+theme : beige
+theme-override : assets/css/PITCHME.css
+logo : assets/images/logo.png
+transition : slide
+published : false
+slide-number: true
+highlight: vs
+remote-control: true
+footnote: "Container with machine guns"
