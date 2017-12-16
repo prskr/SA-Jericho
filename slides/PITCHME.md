@@ -1,7 +1,18 @@
-@title[Einleitung]
+@title[Einführung]
 
-# Containers with Machine Guns
+# Container with machine guns
 
-Peter Kurfer, Thomas Mildner, Marco Grgic, Sebastian Weißenbacher
+Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 
---
+---
+
+### Agenda
+
+* Problembeschreibung
+* Docker
+* Gattling
+* Ausblick
+
+---
+
+### Problembeschreibung

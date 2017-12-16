@@ -33,22 +33,6 @@ paths:
           description: success
           schema:
             $ref: '#/definitions/JokesArray'
-    post:
-      tags:
-          - jokes
-      summary: Create a new joke
-      operationId: createJoke
-      parameters:
-        - in: body
-          name: joke
-          required: true
-          schema:
-            $ref: '#/definitions/Joke'
-      responses:
-        201:
-          description: success
-          schema:
-            $ref: '#/definitions/Joke'
 
   /jokes/{jokeId}:
     get:
@@ -67,30 +51,7 @@ paths:
       responses:
         default:
           description: success
-    put:
-      tags:
-        - jokes
-      summary: Update an existing joke
-      operationId: updateJoke
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: jokeId
-          required: true
-          type: integer
-          format: int32
-        - in: body
-          name: joke
-          required: true
-          schema:
-            $ref: '#/definitions/Joke'
-      responses:
-        default:
-          description: success
-          schema:
-            $ref: '#/definitions/Joke'
-  /joke/random:
+  /jokes/random:
     get:
       tags:
         - jokes

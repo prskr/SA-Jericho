@@ -10,13 +10,10 @@ import io.vertx.core.Handler
  * Created on 10/29/17.
  */
 interface IJokeApi {
-	fun createJoke(joke: JokeDto, handler: Handler<AsyncResult<JokeDto>>)
 
 	fun getJoke(jokeId: Int, handler: Handler<AsyncResult<JokeDto>>)
 
 	fun getJokes(pageIndex: Int, pageSize: Int, handler: Handler<AsyncResult<JokesArrayDto>>)
 
 	fun getRandomJoke(handler: Handler<AsyncResult<JokeDto>>)
-
-	fun updateJoke(jokeId: Int, joke: JokeDto, handler: Handler<AsyncResult<JokeDto>>)
 }
