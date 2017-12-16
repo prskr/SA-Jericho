@@ -2,6 +2,14 @@
 
 [![Build Status](https://travis-ci.org/baez90/SA-Jericho.svg?branch=master)](https://travis-ci.org/baez90/SA-Jericho)
 
+## Slides
+
+The slides are created with [GitPitch](https://github.com/gitpitch/gitpitch) and can be previewed [here](https://pitch.kns-it.de/baez90/sa-jericho?p=slides#/).
+If you don't want to use the publicly available container you can spawn your own GitPitch instance with [this Docker Container](https://hub.docker.com/r/knsit/gitpitch/).
+The repository includes a [script](./slides/runGitPitch.sh) which starts the container with the minimal required configuration.
+
+_Note that the script uses the tinier GitPitch container which does **not** include PDF export support!_
+
 ## What is Jericho?
 
 Jericho is Gatling in Docker containers.
