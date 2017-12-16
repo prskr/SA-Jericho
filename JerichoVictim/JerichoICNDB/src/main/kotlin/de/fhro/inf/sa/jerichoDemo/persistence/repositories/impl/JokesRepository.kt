@@ -21,7 +21,7 @@ class JokesRepository(jokesDao: JokesDao) : RepositoryBase<Jokes, JokesRecord, I
 		return dao.client().fetchOne(
 				DSL.using(dao.configuration())
 						.query("SELECT * FROM random_joke()"),
-				{ t -> JokeDto(joke = t.getString("joke_text"), category = t.getString("category_text")) }
+				{ t -> JokeDto(t.getInteger("joke_id"), t.getString("joke_text"), t.getString("category_text")) }
 		)
 	}
 

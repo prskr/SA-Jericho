@@ -4,14 +4,14 @@ import scala.concurrent.duration._
 
 class RandomJokeSimulation extends Simulation {
     val httpConf = http
-        .baseURL("http://192.168.111.20:58080")
+        .baseURL("http://icndb:8080")
         .acceptHeader("application/json")
         .acceptEncodingHeader("gzip, deflate")
         .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
 
     val scn = scenario("RandomJokeSimulation").repeat(100) {
         exec(http("getRandomJoke")
-        .get("/api/v1/joke/random"))
+        .get("/api/v1/jokes/random"))
     }    
 
     setUp(

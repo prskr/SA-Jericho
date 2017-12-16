@@ -9,7 +9,6 @@ import de.fhro.inf.sa.jerichoDemo.persistence.generated.tables.pojos.Jokes
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.ICategoriesRepository
 import de.fhro.inf.sa.jerichoDemo.persistence.repositories.IJokesRepository
 import de.fhro.inf.sa.jerichoDemo.utilities.anyToInt
-import de.fhro.inf.sa.jerichoDemo.utilities.random
 import io.github.jklingsporn.vertx.jooq.async.future.AsyncJooqSQLClient
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.eventbus.Message
@@ -37,8 +36,6 @@ class JokesJpaApiVerticle @Inject constructor(private val jokesRepo: IJokesRepos
 		vertx.eventBus().consumer<Int>(CQRSEndpoints.GET_JOKE_JPA_ID).handler(this::handleGetJokeById)
 		vertx.eventBus().consumer<Void>(CQRSEndpoints.GET_RANDOM_JOKE_JPA_ID).handler(this::handleGetRandomJoke)
 		vertx.eventBus().consumer<JsonObject>(CQRSEndpoints.GET_JOKES_JPA_ID).handler(this::handleGetJokes)
-		vertx.eventBus().consumer<JsonObject>(CQRSEndpoints.CREATE_JOKE_JPA_ID).handler(this::handleCreateJoke)
-		vertx.eventBus().consumer<JsonObject>(CQRSEndpoints.UPDATE_JOKE_JPA_ID).handler(this::handleUpdateJoke)
 	}
 
 	override fun stop() {
@@ -71,37 +68,6 @@ class JokesJpaApiVerticle @Inject constructor(private val jokesRepo: IJokesRepos
 		jokesRepo.getRandomJoke().thenAcceptAsync { joke ->
 			message.reply(JsonObject(Json.encode(joke)).encode())
 		}
-	}
-
-	private fun handleCreateJoke(message: Message<JsonObject>) {
-		val joke = Json.mapper.readValue<JokeDto>(message.body().getJsonObject("joke").encode(), JokeDto::class.java)
-		if (joke.category == null) {
-			jokesRepo.insertAsync(Jokes(joke.id, joke.joke, null)).thenAcceptAsync {
-				jokesRepo.findByJokeAsync(joke.joke).thenAcceptAsync { matchingJokes ->
-					if (matchingJokes.isEmpty()) {
-						message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
-					} else {
-						message.reply(JsonObject(Json.encode(matchingJokes[0])).encode())
-					}
-				}
-			}
-		} else {
-			categoriesRepo.exists(joke.category!!)
-					.thenAcceptAsync({ exists ->
-						if (!exists) {
-							categoriesRepo.insertAsync(Categories(0, joke.category)).thenAcceptAsync {
-
-							}
-						} else {
-							//TODO insert joke
-						}
-					})
-		}
-	}
-
-	private fun handleUpdateJoke(message: Message<JsonObject>) {
-		val jokeId = Json.mapper.readValue(message.body().getString("jokeId"), Int::class.java)
-		val joke = Json.mapper.readValue(message.body().getString("joke"), JokeDto::class.java)
 	}
 
 	private fun getJoke(id: Int, successHandler: (JokeDto) -> Unit, errorHandler: () -> Unit) {

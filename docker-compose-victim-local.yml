@@ -10,8 +10,6 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - "~/tmp/jericho-pgsql-release:/var/lib/postgresql/data"
-    ports:
-      - "5432:5432"
     networks:
       - ICNDB-Net
   icndb:
