@@ -52,7 +52,8 @@ Als Einsatzgebiete sind zusammenfassend zu nennen:
 \subsection{Herausforderungen bei Performance Tests}
 
 Wichtig bei Performance Tests bzw. generell ist die genaue Definition eines zu erreichenden Ziels. Was genau soll als Ergebnis des Tests herausgefunden werden? Nur so kann die Testumgebung dementsprechend geplant und durchgeführt werden.\footnote{In der Praxis wird der Begriff \glqq Performance Test\grqq{} äquivalent für Stress Tests bzw. Last Tests verwendet.\cite{Lasttest51:online}}\\
-Performance Tests sind abhängig von der zu erwarteten Leistung. Sicherlich ist es nicht sinnvoll als \glqq kleines\grqq{} Startup mit einer Million von Requests zu rechnen. Die Verhältnisse von eingesetzter Architektur bzw. Betriebsmitteln zu der erwarteten Nutzungsintensität muss gegeben sein. Bei einem Performance Tests wird zwangsläufig irgendwann der Punkt kommen an dem die Anwendung ein deutlich verlangsamtes Ansprechverhalten zeigt. Diesen Punkt muss jeder Software Ingenieur bzw. Manager individuell für das eigene Produkt passend wählen.
+Performance Tests sind abhängig von der zu erwarteten Leistung. Sicherlich ist es nicht sinnvoll als \glqq kleines\grqq{} Startup mit einer Million von Requests zu rechnen. Die Verhältnisse von eingesetzter Architektur bzw. Betriebsmitteln zu der erwarteten Nutzungsintensität muss gegeben sein. Bei einem Performance Tests wird zwangsläufig irgendwann der Punkt kommen an dem die Anwendung ein deutlich verlangsamtes Ansprechverhalten zeigt. Diesen Punkt muss jeder Software Ingenieur bzw. Manager individuell für das eigene Produkt passend wählen.\\
+Es ist darauf zu achten, dass die Testbedingungen möglichst realistisch und ähnlich zu der Produktivumgebung zu wählen sind. So muss beispielsweise beim Testen einer Anwendung auch berücksichtigt werden, dass es zu Verbindungsabbrüchen, unterschiedlichen Nutzungsarten, verschiedene Clients und dergleichen kommen kann. Um möglichst viele Szenarien testen zu können muss im Vorfeld eine Analyse durchgeführt werden, wie die Anwendung hauptsächlich benutzt werden wird. So können Parameter wie die erwartete Benutzerzahl, verwendete Client Konfigurationen usw. herausgefunden und getestet werden.
 
 \section{Gatling - Features}
 
@@ -110,12 +111,12 @@ Abbildung \ref{fig:jenkinsBuildResult} zeigt einen Graphen, der auf dem Buildser
 In diesem Unterkapitel soll auf den grundsätzlichen Aufbau eines Gatling Tests eingangen werden.\\
 Gatling Tests sind in der Programmiersprache Scala\footnote{{} Scala ist eine Java-ähnliche Sprache, die auf der \ac{JVM} läuft.} implementiert.
 Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt. Dieser soll die Schnittstelle für das zufällige Abholen eines Witzes auf Last testen. Die grundsätzliche Funktionsweise der Schnittstelle wird an dieser Stelle vorausgesetzt. Dies muss im Vornherein durch Unit - bzw. Integrationstests sichergestellt werden. Für das Testen der Auslastung müssen allerdings einige Details über die Schnittstelle bekannt sein. So muss u.a. der Server mit zugehörigem Port, sowie der genaue Aufbau der Schnittstelle für den Entwickler einsehbar sein. Dieser Aspekt wird an dieser Stelle erwähnt, da es in größeren Unternehmen durchaus sein könnte, dass unabhängige Teams die gleiche Anwendung testen müssen. In diesem Fall hätte der Entwickler des Performance-Tests, nur die Black-Box-Sicht auf die bereits programmierte Anwendung. Das Code Beispiel \ref{testCodingSample} soll nun im Detail erläutert werden.\\
-Zuerst werden die notwendigen Bibliotheken über \glqq Import-Befehle\grqq{} geladen. Die Klasse \glqq RandomJokeSimulation\grqq{} erbt von der definierten Klasse \glqq Simulation\grqq{}.\footnote{{} Jeder Gatling.io Test muss von der Simulation Klasse erben.} Anschließend wird die Verbindung konfiguriert, sowie der notwendige Test-Request zusammengebaut. In diesem Beispiel läuft die Anwendung im internen Netz an der Adresse \glqq http://192.168.111.20\grqq{} auf Port 58080. Damit der Request vom Server akzeptiert wird, werden die notwendigen Header gesetzt. \\
+Zuerst werden die notwendigen Bibliotheken über \glqq Import-Befehle\grqq{} geladen. Die Klasse \glqq RandomJokeSimulation\grqq{} erbt von der definierten Klasse \glqq Simulation\grqq{}.\footnote{{} Jeder Gatling.io Test muss von der Simulation Klasse erben.} Anschließend wird die Verbindung konfiguriert, sowie der notwendige Test-Request zusammengebaut. In diesem Beispiel läuft die Anwendung im internen Netz an der Adresse \glqq http://192.168.111.20\grqq{} auf Port 58080. Damit der Request vom Server akzeptiert wird, werden die notwendigen Header gesetzt.\\
 Anschließend wird die zu testende Logik, in Gatling.io \glqq Scenario\grqq{} genannt, implementiert. Das Scenario bekommt einen Namen zugewiesen und die Aufforderung, wie oft dieses ausgeführt werden soll. Zudem wird der genaue Pfad der Schnittstelle definiert und die \ac{HTTP} Methode, die auf die \ac{REST} Schnittstelle ausgeführt werden soll, ausgewählt.\\
 Der Lasttest soll möglichst unter den Bedingungen durchgeführt werden, die auch im produktiven System aktiv sind. So ist es unrealistisch anzunehmen dass 1000 Benutzer exakt zeitgleich die Abfrage auf die Schnittstelle absetzen. Es ist vielmehr anzunehmen, dass die Benutzeranzahl mit zunehmender Laufzeit des Programms ansteigen wird. Genau diese Funktionalität bietet Gatling.io an. Zur Test Laufzeit können kontinuierlich, dies ist konfigurierbar, neue Benutzer erstellt werden, die auch Abfragen auf die Schnittstelle absetzen. So kann ein realistischer Use-Case getestet werden.\\ 
 
 \begin{minipage}{\linewidth}
-\begin{lstlisting}[frame=single,caption=Testabfrage auf Schnittstelle, label=testCodingSample, language=Scala]
+\begin{lstlisting}[frame=single,caption=Testabfrage auf Schnittstelle in Gatling, label=testCodingSample, language=Scala]
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
@@ -138,21 +139,11 @@ class RandomJokeSimulation extends Simulation {
 }
 \end{lstlisting}
 \end{minipage}
-
-Als Alternative zu Gatling.io ist \textit{Apache JMeter} zu nennen.\footnote{{} vgl. \url{https://jmeter.apache.org/}} JMeter wurde im Jahr 1998 erstmalig veröffentlicht und wurde hauptsächlich in Java implementiert. 
-
-Vergleich \cite{JMetervs63:online}
-
-Allgemein Alternative mit JMeter
-%https://www.heise.de/developer/artikel/Last-und-Performance-Tests-mit-JMeter-oder-Gatling-3648505.html
-
-JMeter vs Gatling
-%https://octoperf.com/blog/2015/06/08/jmeter-vs-gatling/
-
+Als Alternative zu Gatling.io ist \textit{Apache JMeter} zu nennen.\footnote{{} vgl. \url{https://jmeter.apache.org/}} JMeter wurde im Jahr 1998 erstmalig veröffentlicht und wurde hauptsächlich in Java implementiert.\footnote{{} Der direkte Vergleich von JMeter zu Gatling ist hier aufgezeigt.\cite{JMetervs63:online}}
 
 \section{Zwischenfazit Lasttests}
 
-Performance- oder Lasttests sind notwendig um eine stabile Anwendung bzw. API zu erreichen.
-Langfristig wird sich die Architektur bzw. der Programmierprozess verbessern wenn die Ergebnisse der Tests analysiert, ausgewertet und auch für zukünftige Entwicklung berücksichtigt werden. Durch die Integration in eine Continuous  Integration Umgebung wird ein schnelles Feedback der Tests an die Entwickler garantiert und diese können noch während der Entwicklungsphase aufkommende negative Trends bzgl. der Antwortzeiten / Performance der Anwendung analysieren und beheben. So wird garantiert dass eine umfangreich getestete Software keine bösen Überraschungen bei aufkommender Last zeigt.
+Performance- oder Lasttests sind notwendig um eine stabile Anwendung bzw. API zu entwickeln.
+Langfristig wird sich die Architektur bzw. der Programmierprozess verbessern, wenn die Ergebnisse der Tests analysiert, ausgewertet und auch für zukünftige Entwicklungen berücksichtigt werden. Durch die Integration in eine Continuous Integration Umgebung wird ein schnelles Feedback der Tests an die Entwickler garantiert und diese können noch während der Entwicklungsphase aufkommende negative Trends bzgl. der Antwortzeiten / Performance der Anwendung analysieren und beheben. So wird garantiert, dass eine umfangreich getestete Software keine bösen Überraschungen bei aufkommender Last zeigt. Mit Gatling wird ein umfangreiches Performance Test Tool angeboten, das sowohl eine gute Integration in einen Buildserver, wie beispielsweise Jenkins bietet, als auch mit einer \ac{GUI} einfach Operationen durchführen lässt.
 
 
