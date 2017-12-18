@@ -23,12 +23,23 @@ Die übrigen Nodes, ehemals Minions genannt, bilden einzelne Server auf denen Co
 \begin{itemize}
 	\item Kubelet - zentrale Komponente einer Node und überwacht als solche den aktuellen Status der Node und meldet diese an den Controller Manager. Dieser gibt dann Anweisung zum Starten oder Stoppen von Containern. Fällt ein Container aus wird er vom Kubelet auf der gleichen Node neu gestartet. Fällt die komplette Node aus, wird dies vom Master aufgrund ausbleibender Statusmeldung erkannt und die Pods werden auf anderen Nodes neu gestartet.
 	\item Kube-Proxy - implementiert Netzwerk Proxy und Load Balancer. Routet abhängig von IP Adresse und Port eingehenden Netzwerkverkehr an die entsprechenden Container.
-	\item cAdvisor - ist im Kubelet integriert und zeichnet die Resourcen eines Containers auf, um diese anderen Monitoringlösungen zur Auswertung von Metriken bereitzustellen.
+	\item cAdvisor - ist im Kubelet integriert und zeichnet die Ressourcen eines Containers auf, um diese anderen Monitoringlösungen zur Auswertung von Metriken bereitzustellen.
 \end{itemize}
+\newpage
 \section{Skalierung}
-
+Eines der nativen Features von Kubernetes ist die automatische horizontale Skalierung.\\Verantwortlich dafür ist ein Teil des Controller Managers, der "Horizontal Pod Autoscaler".
+Dieser bekommt über eine Konfiguration mitgeteilt, wie oft er die Auslastung welcher Ressourcen abfragen soll und wie er diese zu interpretieren hat.\\
+Die Metriken werden vom Controller Manager über eine eigene API, speziell für die Auslastung von Ressourcen gewonnen. Dabei können nicht nur Informationen pro Pod abgefragt, sondern auch benutzerdefinierte Messwerte ausgelesen werden.\\
+Grundsätzlich können die Messwerte entweder als Auslastungs-Wert oder Rohwert interpretiert werden.\\
+Im ersteren Fall berechnet der Controller zuerst den Nutzungswert als Prozentsatz der entsprechenden Nachfrage nach Ressourcen für die Container in jedem Pod.
+Ist der Roh-Wert konfiguriert so entfällt der erste Schritt und der Messwert wird direkt übernommen.\\
+Anschließend berechnet der Controller ausgehend vom Ergebnis aus erstem Schritt oder dem Rohwert einen Mittelwert über alle zu skalierenden Pods welcher dann als Verhältnis dient, wie viele neue Pods repliziert werden müssen.
+\\\\
+Ebenfalls konfigurierbar sind die Schwellenwerte für die Verzögerungen beim Hoch- und Runterskalieren. Diese müssen jedoch mit bedacht gewählt werden, ist die Verzögerung zu hoch eingestellt reagiert der Autoscaler nicht schnell genug auf erhöhte Last. Umgekehrt kann es bei zu niedriger Verzögerung und sich zu schnell ändernden Lasten zu unnötigem Overhead und Ressourcenverbrauch aufgrund ständig neu erzeugter Container kommen.
 \section{Persistenz}
 
 \section{Service Discovery und Load Balancing}
 
 \section{Batch Exectution}
+
+\section{Kubernetes vs Docker Swarm}
