@@ -80,10 +80,13 @@ Test & Testfunktion \\ \hline
 
 \subsection{Metriken}
 
-Welche Metriken sind verfügbar ?
-Wie werden diese gesammelt?
-Wie werden diese interpretiert?
-
+Gatling.io sammelt nach erfolgreichem Testen einer Anwendung die gemessenen Metriken in einem Bericht und stellt diese dem Benutzer zur Verfügung. In Abbildung \ref{fig:gatlingMetriken} ist exemplarisch ein Bericht aufgezeigt. In der Übersicht ist in einem Säulendiagramm das Antwortverhalten gegliedert, bspw. grüner Balken hat eine Antwortzeit von unter 800 ms. Außerdem lässt sich erkennen wie viele Requests insgesamt durchgeführt wurden, wie viele fehlgeschlagen sind, sowie die erfolgreich beantworteten Requests.
+\begin{figure}
+	{\caption{Gatling Metriken}
+		\label{fig:gatlingMetriken}}
+	{\includegraphics[scale=0.3]{\figdir/gatlingMetriken}}\\
+	\tiny{\quelle\url{https://gatling.io/wp-content/uploads/2016/12/rapport.png}}
+\end{figure}
 
 
 
