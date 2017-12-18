@@ -61,22 +61,31 @@ Es ist darauf zu achten, dass die Testbedingungen möglichst realistisch und äh
 
 \subsection{Gatling DSL}
 
+Unter einer \acf{DSL} versteht man eine Beschreibungssprache für ein definiertes Problemfeld. Sie erleichtert die Interaktion mit einem komplexen System ohne die genauen Hintergründe zu kennen. Die Lesbarkeit bzw. das Bedienverhalten kann so deutlich verbessert werden. Für Gatling wurde eine eigene \ac{DSL} entworfen um die Test Szenarios so lesbar wie möglich zu gestalten. In Tabelle \ref{table_cheatSheetDSL} sind die wichtigsten Befehle mit deren Bedeutungen aufgelistet.\footnote{{} Für eine vollständige Auflistung der Befehle: vgl. \url{https://gatling.io/docs/current/cheat-sheet/} (Stand der Abfrage: 18.12.2017)} Ein Code Beispiel für die Verwendung dieser Schlüsselwörter wird in Kapitel \ref{sec:testWithGatlingExample} in Beispiel \ref{testCodingSample} gegeben. 
+
 \begin{table}[]
 \centering
 \caption{Cheat-Sheet DSL Gatling.io}
 \label{table_cheatSheetDSL}
-\begin{tabular}{|
->{\columncolor[HTML]{FCFF2F}}l |
->{\columncolor[HTML]{67FD9A}}l |}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|c|c|}
 \hline
-\cellcolor[HTML]{C0C0C0}Befehl & \cellcolor[HTML]{C0C0C0}Funktionsweise \\ \hline
-{\color[HTML]{333333} Erster Test} & Testfunktion \\ \hline
-Test & Testfunktion \\ \hline
+\rowcolor[HTML]{FFCB2F} 
+\textbf{Befehl} & \textbf{Verwendung} \\ \hline
+scenario &  definiert ein neues zu testendes Szenario\\ \hline
+repeat & gibt die Anzahl an, wie oft ein Test ausgeführt werden soll \\ \hline
+exec \& get & es wird die genaue \ac{URI} angegeben, die getestet wird  \\ \hline
+setUp - Methode & definiert die Testumgebung \\ \hline
+inject - Methode & gibt an wie viele Benutzer auf der Anwendung simuliert werden sollen\footnote{{} Hier können verschiedene Parameter mitgegeben werden, wie beispielsweise 100 Benutzer auf einmal oder ein stetiger Anstieg der Benutzer zu einem konfigurierten Maximalwert.}  \\ \hline
+Feeder Definition & gibt verschiedene Modi für den Import in das Test Szenario ein \\ \hline
+HTTP Action & definiert die Parameter, die für einen erfolgreichen Request gesetzt werden müssen \\ \hline
+HTTP Checks & checkt den Rückgabewert des HTTP Requests  \\ \hline
+Assertions &  die erwarteten Ergebnisse werden mit den tatsächlichen abgeglichen\footnote{{} Auch hier können verschiedene Einstellungen wie Scopes, Bedingungen usw. getätigt werden. } \\ \hline
+
+
 \end{tabular}
-
+\end{adjustbox}
 \end{table}
-%Tabelle mit wichtigsten Befehlen zeigen
-
 
 \subsection{Metriken}
 
@@ -111,6 +120,7 @@ Abbildung \ref{fig:jenkinsBuildResult} zeigt einen Graphen, der auf dem Buildser
 
 
 \section{Anwendungsfall - Performance Test mit Gatling}
+\label{sec:testWithGatlingExample}
 In diesem Unterkapitel soll auf den grundsätzlichen Aufbau eines Gatling Tests eingangen werden.\\
 Gatling Tests sind in der Programmiersprache Scala\footnote{{} Scala ist eine Java-ähnliche Sprache, die auf der \ac{JVM} läuft.} implementiert.
 Im Code-Beispiel \ref{testCodingSample} ist beispielhaft ein solcher Test dargestellt. Dieser soll die Schnittstelle für das zufällige Abholen eines Witzes auf Last testen. Die grundsätzliche Funktionsweise der Schnittstelle wird an dieser Stelle vorausgesetzt. Dies muss im Vornherein durch Unit - bzw. Integrationstests sichergestellt werden. Für das Testen der Auslastung müssen allerdings einige Details über die Schnittstelle bekannt sein. So muss u.a. der Server mit zugehörigem Port, sowie der genaue Aufbau der Schnittstelle für den Entwickler einsehbar sein. Dieser Aspekt wird an dieser Stelle erwähnt, da es in größeren Unternehmen durchaus sein könnte, dass unabhängige Teams die gleiche Anwendung testen müssen. In diesem Fall hätte der Entwickler des Performance-Tests, nur die Black-Box-Sicht auf die bereits programmierte Anwendung. Das Code Beispiel \ref{testCodingSample} soll nun im Detail erläutert werden.\\
