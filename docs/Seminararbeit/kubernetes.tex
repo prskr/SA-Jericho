@@ -37,9 +37,88 @@ Anschließend berechnet der Controller ausgehend vom Ergebnis aus erstem Schritt
 \\\\
 Ebenfalls konfigurierbar sind die Schwellenwerte für die Verzögerungen beim Hoch- und Runterskalieren. Diese müssen jedoch mit bedacht gewählt werden, ist die Verzögerung zu hoch eingestellt reagiert der Autoscaler nicht schnell genug auf erhöhte Last. Umgekehrt kann es bei zu niedriger Verzögerung und sich zu schnell ändernden Lasten zu unnötigem Overhead und Ressourcenverbrauch aufgrund ständig neu erzeugter Container kommen.
 \section{Persistenz}
-
+Eines der grundsätzlichen Probleme von Container-Anwendungen ist die Persistenz von Daten. Das gängige Vorgehen Daten in einem Container zur Verfügung zu stellen sind Volumes. Das Problem von Volumes ist ihre Flüchtigkeit.
+Stürzt ein Container ab, so wird er vom Kubelet neu gestartet doch die Daten sind dann nicht mehr verfügbar da der Container in seinem Initialzustand gestartet wird.\\
+Laufen Container-Anwendungen in einem Cluster, teilen diese häufig Ressourcen untereinander, bzw. greifen gemeinsam darauf zu.\\
+Doch wie stellt man Ressourcen für Anwendungen bereit, die auf verschiedenen Servern laufen?
+Kubernetes bietet hierfür eine Lösung in Form von Persistent Volumes.\\
+Diese können als Ressource innerhalb des Clusters, ähnlich einer Node betrachtet werden und werden vom Administrator bereitgestellt wird. Sie können von Containern wie Volumes genutzt werden, haben aber einen Lebenszyklus der unabhängig von den Pods ist die auf das persistente Volume zugreifen.
+\newpage
 \section{Service Discovery und Load Balancing}
-
+Kubernetes Pods sind Eintagsfliegen. Sie werden vom Replication Controller erzeugt, gestartet, später gestoppt und gelöscht. Auch wenn jedem Pod eine eigene IP Adresse vergeben wird ändert sich diese dennoch je nach Verfügbarkeit. 
+Dies führt zu folgendem Problem:\\
+Wenn eine Gruppe Pods - Backend genannt - Funktionalität für eine andere Gruppe Pods - Frontend gennant - bereitstellt, wie finden die Frontend Pods die Backend Pods?\\
+Hier kommen Services ins Spiel.\\\\
+Ein Kubernetes Service ist eine abstrakte Definition einer Gruppe von Pods und Regeln, wie diese angesprochen werden können. Manchmal werden diese auch Micro-Service genannt.\\\\
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[frame=single,caption=Kubernetes Service Definition, label=kubernetesServiceDefinition, language=Scala]
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+  spec:
+    selector:
+      app: MyApp
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+\end{lstlisting}
+\end{minipage}
+Beispiel \ref{kubernetesServiceDefinition} zeigt eine Service Definition mit der ein Service Objekt namens ``my-service`` erzeugt wird, das in jedem zugehörigen Pod mit dem Label ``app=MyApp`` den TCP Port 9376 verfügbar macht.
+In einem Service Objekt kann ein eingehendes Port auf ein beliebiges Port am Pod gemappt werden.\\\\
+Interessanter ist die Möglichkeit, statt einer Port Nummer einen String mit einer Referenz auf ein Port angeben zu können. Dies ergmöglicht es, die tatsächliche Port Nummer welche dieser Referenz zugewiesen wird, in jedem Pod innerhalb der Gruppe unterschiedlich zu konfigurieren, was das Deployment und die Weiterentwicklung von Services sehr flexibel macht. So können etwa in der nächsten Version des Backends die offenen Ports der Pods geändert werden während das Backend dennoch für die Clients erreichbar bleibt.
+\\\\
+Kubernetes unterstützt grundsätzlich zwei Modi zur Service Discovery - Umgebungsvariablen und DNS.\\
+Wenn ein Pod innerhalb einer Node gestartet wird fügt das Kubelet automatisch eine Reihe von Umgebungsvariablen für jeden aktiven Service an. So werden zum Beispiel für den Service ``redis-master``, der unter der Cluster IP Adresse 10.0.0.11 und TCP Port 6379 erreichbar ist, die in Beispiel \ref{kubernetesEnvVariables} gezeigten Umbgebungsvariablen angelegt.\\
+\begin{minipage}{\linewidth}
+	\begin{lstlisting}[frame=single,caption=Umgebungsvariablen für Service ``redis-master``, label=kubernetesEnvVariables, language=bash]
+REDIS_MASTER_SERVICE_HOST=10.0.0.11
+REDIS_MASTER_SERVICE_PORT=6379
+REDIS_MASTER_PORT=tcp://10.0.0.11:6379
+REDIS_MASTER_PORT_6379_TCP=tcp://10.0.0.11:6379
+REDIS_MASTER_PORT_6379_TCP_PROTO=tcp
+REDIS_MASTER_PORT_6379_TCP_PORT=6379
+REDIS_MASTER_PORT_6379_TCP_ADDR=10.0.0.11
+	\end{lstlisting}
+\end{minipage}\\\\
+Dies impliziert eine gewisse Reihenfolge. Jeder Service den ein Pod nutzen soll muss entsprechend vor dem Pod erzeugt werden, da ansonsten die Umgebungsvariablen nicht angelegt werden können.\\\\
+Service Discovery über DNS unterliegt dieser Einschränkung dagegen nicht.\\
+Ein DNS Server kann als optionale Komponente dem Cluster hinzugefügt werden. Dieser fragt den API Server nach neuen Services ab und legt für jeden eine Reihe DNS Einträge an.\\\\
+Nehmen wir erneut den ``my-service`` als Beispiel und nehmen an, dass dieser im Namespace ``my-ns`` erreichbar ist, so legt der DNS Server einen Eintrag für ``my-service.my-ns`` an. 
+Pods, die im ``my-ns`` Namespace liegen können den Service erreichen indem sie den Namen ``my-service`` auflösen.\\
+Pods die in anderen Namespaces liegen müssen entsprechend den Namen ``my-service.my-ns`` auflösen. In beiden Fällen wird als Resultat die IP Adresse innerhalb des Clusters geliefert.\\
+Kubernetes unterstützt ebenfalls DNS Einträge für Service Definitionen mit benamten Ports. Enthält beispielsweise die Definition des ``my-service.my-ns`` ein mit ``http`` referenziertes TCP Port, so kann über eine DNS Namensauflösung nach ``\_http.\_tcp.my-service.my-ns`` die entsprechende Port Nummer herausgefunden werden.\\\\
+In manchen Fällen ist es nötig Services innerhalb des Clusters auch von außerhalb erreichbar zu machen. Kubernetes bietet hierfür verschiedene Möglichkeiten von Service Typen an. An dieser Stelle soll im speziellen nur auf den Typ Load Balancer eingegangen werden.\\
+Abhängig vom Cloud Hoster wird für einen Service, der mit Typ Loadbalancer definiert ist, automatisch ein externer Loadbalancer vorgeschaltet. Dieser Vorgang geschieht asynchron und die entsprechende Statusinformation wird im ``status.loadbalancer`` Feld des jeweiligen Service hinterlegt. Code Beispiel \ref{kubernetesLoadbalancerDefinition} zeigt eine mögliche Servicedefinition.\\
+\begin{minipage}{\linewidth}
+	\begin{lstlisting}[frame=single,caption=Kubernetes Service mit Loadbalancer Definition, label=kubernetesLoadbalancerDefinition, language=Scala]
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9376
+  clusterIP: 10.0.171.239
+  loadBalancerIP: 78.11.24.19
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 146.148.47.155
+	\end{lstlisting}
+\end{minipage}\\
+Eingehender Netzwerkverkehr vom externen Loadbalancer wird dann an die entsprechenden Pods geroutet, wie genau dies jedoch geschieht hängt vom jeweiligen Cloud Hoster ab.\\\\
+In gemischten Umgebungen kann es manchmal nötig sein auch Verkehr innerhalb des Clusters routen zu lassen. Dazu wären zwei Services nötig die sowohl intern als auch extern eingehenden Netzwerkverkehr zu den gwünschten Endpunkten routen können. Dies kann erreicht werden, indem in der Service Definition spezielle Annotations mit dem Hinweis auf einen internen Load Balancer hinterlegt werden.\\
 \section{Batch Exectution}
-
+TODO
 \section{Kubernetes vs Docker Swarm}
+Die derzeit am häufigsten genutzten Tools zum Cluster Management bilden Kubernetes und Docker Swarm weshalb an dieser Stelle noch ein kurzer Vergleich der beiden gezogen werden soll.\\
+Der wohl größte Vorteil von Docker Swarm ist wohl das native Clustering von Docker Containern. Außerdem nutzt Swarm die gleiche API wie Docker, sodass Nutzer die gleichen Tools die sie mit Docker nutzen auch in Docker Swarm nutzen können ohne einen separaten Befehlssatz lernen zu müssen. Dies ist gleichermaßen auch ein Nachteil, da Tools die von Docker selbst nicht unterstützt werden auch in Docker Swarm nicht genutzt werden können. Außerdem bot Docker Swarm in seinen Anfängen keinerlei Möglichkeit für Persistenz.\\\\
+Kubernetes dagegen wurde losgelöst von Docker entwickelt und bietet daher einiges an Flexibilität bei der Wahl von Tools. Diese Flexibilität wird aber mit einem gewissen Preis gewonnen. Während persistente und geteilte Volumes, Loadbalancer oder Service Discovery mitgeliefert werden, können diese nicht über die native Docker API genutzte werden. Auch müssen sämtliche Container und Service Definitionen die mit Docker, bzw. Docker Compose geschrieben wurden von Grund auf neu erstellt werden da Kubernetes andere YAML Definitionen als Docker nutzt.\\
+Auch wenn Kubernetes einige Vorteile gegenüber Docker Swarm bietet, bringen Einstieg und Setup einiges an Overhead mit. Währenddessen hat Docker Swarm feature-technisch durchaus aufholen können und bietet einen annährenden Funktionumfang der ohne große Umstellung genutzt werden kann.
