@@ -205,3 +205,30 @@ Einerseits, da es nicht erforderlich ist und andererseits, da Docker hierzu folg
 
 \subsection{Volumes und shared Volumes}
 
+Wie bereits im Unterkapitel \ref{c:einführung} erwähnt, werden per default die Daten eines Containers in die writable Schicht des Docker-Containers geschrieben. 
+Neben dem Nachteil, dass dieses Vorgehen die Container vergrößert, sind die darin abgelegten Daten lediglich zur Laufzeit des Containers verfügbar und werden nach der Ausführung gelöscht.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/DockerMounts}
+	\caption[Docker Mount Typen]{Übersicht der von Docker gebotenen Mount Typen}
+	\label{fig:dockermounts}
+\end{figure}
+
+Aufgrund dessen bietet Docker zur dauerhaften Sicherung der Daten eines Containers, wie in Abbildung \ref{fig:dockermounts} gezeigt, die Verwendung von bind mounts, tempfs mounts und volumes an.
+
+Hierbei ist einerseits zu beachten, dass tempfs mount vorrangig für Anwendungen mit hoher Performance oder sicherheitskritischen Daten genutzt wird und andererseits, dass Docker die Verwendung von bind mounts in ihrer Dokumentation im Unterkapitel Use binde mounts für neu erstellte Anwendungen nicht empfiehlt. 
+Somit wird lediglich die Datenspeicherung mit Hilfe von Volumes für die Anwendung verwendet und betrachtet.
+
+Neben den Möglichkeiten zur Datensicherung geht aus Abbildung \ref{fig:dockermounts} hervor, dass das Volume in das Dateisystem eines Docker-Containers, im Swarm-Modus auch als Service bezeichnet, gemounted und der Inhalt auf dem Host-System (Windows oder Unix) gespeichert wird. 
+Die Verwaltung des Volumes erfolgt entweder mittels des Docker command line interface oder der Docker API.
+
+Aufgrund der Anforderung, dass die beiden erzeugten Volumes künftig von mehreren Services genutzt, beschrieben, gelesen und auf einem eigenen Host-System laufen sollten, konnten weder read-only noch lokale Volumens verwendet werden. 
+Stattdessen wurden zwei shared Volumes durch Verwendung eines Volume Treibers realisiert.
+
+Hierfür ist das Docker NFS, AWS EFS \& Samaba/CIFS Volume Plugin auf einem eigenen Host-System installiert worden.
+Mit diesem wurde das Volume \textit{gatling-logs} erzeugt, das anschließend zu den Attack Nodes und dem Reporter Node der Anwendung gemountet wurde. 
+Zusätzlich zum \textit{gatling-logs} ist das \textit{gatling-results} Volume erstellt worden. 
+Dieses wurde im Reporter Node und dem Reporter-Viewer Node des Swarms gemountet.
+
+Somit verfügt der Reporter Node über alle Daten des Angriffs und leitet diese per \textit{gatling-results} Volume an den Reporter-Viewer Node, der für die Verwertung der Ergebnisse zuständig ist, weiter.
