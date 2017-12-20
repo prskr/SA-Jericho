@@ -2,6 +2,210 @@
 %Do not display source code chapters in toc
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
 
+\begin{lstlisting}[frame=single,caption={Docker-Compose Datei f\"ur Demo-Anwendung}, label=lst:dockerComposeDemoApp, language=Scala]
+version: '3'
+
+services:
+  database:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=W@c[3~DV>~:]4%+5
+      - POSTGRES_USER=jericho
+      - POSTGRES_db=jericho
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - "~/tmp/jericho-pgsql-release:/var/lib/postgresql/data"
+    networks:
+      - ICNDB-Net
+  icndb:
+    image: baez90/jericho-victim:latest
+    environment:
+      - "JDBC_HOSTNAME=database"
+      - "JDBC_USER=jericho"
+      - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
+      - "VERTICLES_COUNT=4"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - ICNDB-Net
+      - JerichoBattlefield
+networks:
+  ICNDB-Net:
+  JerichoBattlefield:
+driver: bridge
+\end{lstlisting}
+
+\newpage
+
+\begin{lstlisting}[frame=single,caption={Docker-Compose Datei f\"ur Jericho}, label=lst:dockerComposeJericho, language=Scala]
+version: '3.4'
+
+services:
+  gatling-attacker:
+    image: baez90/jericho-attacker:2.3.0
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/shared-results
+      - type: volume
+        source: ${PWD}/MachineGuns/RandomJokeSimulation.scala
+        target: /opt/gatling/user-files/simulations/RandomJokeSimulation.scala
+        read_only: true
+    networks:
+      - JerichoBattlefield
+  gatling-reporter:
+    image: baez90/jericho-reporter:2.3.0
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/results
+      - type: volume
+        source: gatling-results
+        target: /opt/gatling/html-out
+  report-viewer:
+    image: nginx:1.13-alpine
+    ports:
+      - "50080:80"
+    volumes:
+      - type: volume
+        source: gatling-results
+        target: /usr/share/nginx/html
+
+networks:
+  JerichoBattlefield:
+    external:
+      name: sajericho_JerichoBattlefield
+
+volumes:
+  gatling-logs:
+gatling-results:
+\end{lstlisting}
+
+\newpage 
+
+
+\begin{lstlisting}[frame=single,caption={Docker Swarm Konfiguration f\"ur Demo-Anwendung}, label=lst:dockerSwarmStackDemoApp, language=Scala]
+version: '3.4'
+
+services:
+  database:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=W@c[3~DV>~:]4%+5
+      - POSTGRES_USER=jericho
+      - POSTGRES_db=jericho
+    networks: 
+      - ICNDB
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+  icndb:
+    image: baez90/jericho-victim:latest
+    environment:
+      - "JDBC_HOSTNAME=database"
+      - "JDBC_USER=jericho"
+      - "JDBC_PASSWORD=W@c[3~DV>~:]4%+5"
+      - "VERTICLES_COUNT=1"
+    networks:
+      - ICNDB
+      - JerichoBattlefield
+    ports:
+      - target: 8080
+        published: 58080
+        protocol: tcp
+        mode: ingress
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+    depends_on:
+      - database
+
+networks:
+  ICNDB:
+  JerichoBattlefield:
+    external:
+name: JerichoBattlefield
+\end{lstlisting}
+
+\newpage
+
+
+\begin{lstlisting}[frame=single,caption={Docker Swarm Konfiguration f\"ur Jericho}, label=lst:dockerSwarmStackJericho, language=Scala]
+version: '3.4'
+
+services:
+  gatling-attacker:
+    image: baez90/jericho-attacker:2.3.0
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/shared-results
+    configs:
+      - source: RandomJokeSimulation
+        target: /opt/gatling/user-files/simulations/RandomJokeSimulation.scala
+    networks:
+      - JerichoBattlefield
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+  gatling-reporter:
+    image: baez90/jericho-reporter:2.3.0
+    volumes:
+      - type: volume
+        source: gatling-logs
+        target: /opt/gatling/results
+      - type: volume
+        source: gatling-results
+        target: /opt/gatling/html-out
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+  report-viewer:
+    image: nginx:1.13-alpine
+    ports:
+      - target: 80
+        published: 50080
+        protocol: tcp
+        mode: ingress
+    volumes:
+      - type: volume
+        source: gatling-results
+        target: /usr/share/nginx/html
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+
+networks:
+  JerichoBattlefield:
+    external:
+      name: JerichoBattlefield
+
+volumes:
+  gatling-logs:
+    driver: nfs
+    driver_opts:
+      share: 192.168.111.30:/var/nfs/gatling-logs
+  gatling-results:
+    driver: nfs
+    driver_opts:
+      share: 192.168.111.30:/var/nfs/gatling-results
+
+configs:
+  RandomJokeSimulation:
+external: true
+\end{lstlisting}
 
 \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 

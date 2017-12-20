@@ -100,6 +100,7 @@ Im folgenden Unterkapitel werden die, für diese Arbeit wichtigsten Docker Funkt
 Hierbei wird falls notwendig anhand einer Begründung erklärt, weshalb eine bestimmte Ausprägung einer Funktionalität gewählt wurde.
 
 \subsection{Docker-Compose}
+\label{ss:dockerCompose}
 
 Standardmäßig wird jeder Docker-Container einzeln mit dem Kommando \textit{docker run} erstellt und ausgeführt.
 Betrachtet man den Titel dieser Arbeit, "Containers with Machine Guns", so geht daraus hervor, dass es sich nicht zwingend um einen einzelnen Container handelt, sondern möglicherweise um eine Vielzahl von Containern.
@@ -214,7 +215,7 @@ Einerseits, da es nicht erforderlich ist und andererseits, da Docker Inc. hierzu
 \end{quote}
 
 \subsection{Volumes und shared Volumes}
-
+\label{ss:sharedVolumes}
 Wie bereits im Unterkapitel \ref{c:einführung} erwähnt, werden per default die Daten eines Containers in die writable Schicht des Docker-Containers geschrieben. 
 Neben dem Nachteil, dass dieses Vorgehen die Container vergrößert, sind die darin abgelegten Daten lediglich zur Laufzeit des Containers verfügbar und werden nach der Ausführung gelöscht.
 
