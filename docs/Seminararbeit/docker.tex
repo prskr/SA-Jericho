@@ -32,7 +32,7 @@ Die Docker Runtime übernimmt die Verwaltung der einzelnen Docker-Container, die
 Im Vergleich zur Virtualisierung mittels einer \ac{VM} bieten Docker-Container einige Vorteile.
 Hierzu zählen einerseits der geringere Bedarf an CPU und RAM sowie andererseits die schnelle Startgeschwindigkeit eines Docker-Containers im Vergleich zu einer herkömmlichen \ac{VM}.
 
-Trotz dessen, dass sich die Docker Container, wie in Abbildung \ref{fig:docker} abgebildet, ein Betriebssystemkernel teilen, sind diese vollständig voneinander isoliert, was dazu führt, dass sich Docker-Container besonders für Continuous Integration und Development eignen.
+Trotz dessen, dass sich die Docker Container, wie in Abbildung \ref{fig:docker} abgebildet, einen Betriebssystemkernel teilen, sind diese vollständig voneinander isoliert, was dazu führt, dass sich Docker-Container besonders für Continuous Integration und Development eignen.
 Dies ist möglich, da die Workspaces, in Docker \glqq{}Container\grqq{} genannt, auf Linux Containern basieren und somit zur Isolierung die folgenden Namespaces genutzt werden:
 
 \begin{itemize}
@@ -44,16 +44,16 @@ Dies ist möglich, da die Workspaces, in Docker \glqq{}Container\grqq{} genannt,
 \end{itemize}
 
 Zur Kontrolle der Hardware Ressourcen verwendet Docker die von Linux stammenden \ac{cgroups}.
-Mittels diesen ist es möglich, den Containern Hardware Ressourcen zuzuweisen und diese nötigenfalls wie z. B. den RAM zu beschränken.
+Mittels diesen ist es möglich den Containern Hardware Ressourcen zuzuweisen und diese nötigenfalls wie z. B. den RAM zu beschränken.
 
 Neben den oben genannten Funktionen nutzt Docker mit dem \ac{UnionFS} eine weitere Linux Funktion.
 Hierbei wird, wie in Abbildung \ref{fig:dockerlayer} zu sehen, auf dem Boot Dateisystem (Kernel) ein Dateisystem Stack erzeugt, der aus mehreren read-only Layern, die Images genannt werden, besteht.
 Jedes Image referenziert und beinhaltet lediglich Ergänzungen zum vorherigen Image.
 Dies macht Docker leichtgewichtig und schnell und ermöglicht einen im Vergleich zu traditionellen \acp{VM} höheren operativen Workload auf der gleichen Hardware.
 
-Beim Start von Docker wird, wie in Abbildung \ref{fig:dockerlayer} dargestellt, ein read-write Container auf dem Stack erzeugt.
-In diesem werden die notwendigen Dateien der darunterliegenden Images kopiert und dort nötigenfalls umgeschrieben und abgelegt.
-Wird Docker gestoppt, so werden einerseits der writable Container und andererseits sämtliche Änderungen an den Dateien, falls nicht ein Speichervolumen außerhalb des \ac{UnionFS} angebunden wurde, gelöscht.
+Beim Start von Docker wird, wie in Abbildung \ref{fig:dockerlayer} dargestellt, ein read-write Layer auf dem Stack erzeugt.
+In diesen werden die notwendigen Dateien der darunterliegenden Images kopiert (\textit{copy-on-write}), dort nötigenfalls umgeschrieben und abgelegt.
+Wird Docker gestoppt, so wird der writable Layer und damit auch sämtliche Änderungen an den Dateien gelöscht, falls nicht ein Speichervolumen außerhalb des \ac{UnionFS} angebunden wurde.
 Somit ist es möglich, die Docker-Container immer zu den gleichen Bedingungen zu starten.
 
 \section{Architektur}
@@ -68,10 +68,14 @@ Mittels einer REST-API und dem \ac{CLI} ist der Client im Stande, mit einem oder
 Ein weiterer wichtiger Bestandteil der Docker Architektur sind, wie in Abbildung \ref{fig:dockerarchitecture} zu sehen, die Docker Registries.
 Hierbei wird zwischen privaten und öffentlichen Registries unterschieden.
 Die wichtigsten öffentlichen Registries sind der Docker Hub und die Docker Cloud.
-So wird z. B. mittels der Befehle \textit{docker run} oder \textit{docker pull} per default das Standard Dockerfile vom Docker Hub genutzt, um einerseits die Standard Images und andererseits den Container über dem Dateisystem Stack automatisch zu bauen.
-Hierfür enthält das Dockerfile alle notwendigen Kommandos.
+So wird z. B. mittels der Befehle \textit{docker run} oder \textit{docker pull} per default das Standard Image vom Docker Hub genutzt, um den Container über dem Dateisystem Stack automatisch zu bauen.
 
-Des Weiteren besteht die Möglichkeit, mit Hilfe des \ac{DDC} eigene (private) Registries anzulegen und z. B. mittels des docker push Kommandos eigene Dockerfiles in den neu angelegten Registries abzulegen und später für den Buildprozess zu nutzen.
+Jedes Image in einer Docker Registry verfügt über einen sogenannten \textit{Tag}.
+Das Standard Image wird markiert durch den Tag \textit{latest}.
+Durch Tags ist es möglich unterschiedliche Versionen eines Containers unter dem selben Namen zu gruppieren.
+Beispielsweise gibt es den offiziellen Java-Container sowohl mit JDK 7, 8 oder 9 und mit JRE 7,8 oder 9.
+
+Des Weiteren besteht die Möglichkeit, mit Hilfe des \ac{DDC} eigene (private) Registries anzulegen und z. B. mittels des \textit{docker push} Kommandos eigene Images in den neu angelegten Registries abzulegen und später für den Buildprozess zu nutzen.
 
 \begin{figure}
 	\centering
@@ -95,21 +99,21 @@ Des Weiteren besteht die Möglichkeit, mit Hilfe des \ac{DDC} eigene (private) R
 Im folgenden Unterkapitel werden die, für diese Arbeit wichtigsten Docker Funktionalitäten erläutert.
 Hierbei wird falls notwendig anhand einer Begründung erklärt, weshalb eine bestimmte Ausprägung einer Funktionalität gewählt wurde.
 
-\subsection{Docker Compose}
+\subsection{Docker-Compose}
 
-Standardmäßig wird jeder Docker-Container einzeln mit dem Kommando \textit{docker run} gestartet und ausgeführt.
+Standardmäßig wird jeder Docker-Container einzeln mit dem Kommando \textit{docker run} erstellt und ausgeführt.
 Betrachtet man den Titel dieser Arbeit, "Containers with Machine Guns", so geht daraus hervor, dass es sich nicht zwingend um einen einzelnen Container handelt, sondern möglicherweise um eine Vielzahl von Containern.
 Diese sollen nach Möglichkeit alle gleichzeitig gestartet und ausgeführt werden.
 
-Um dies zu erreichen, bietet Docker Compose an.
+Um dies zu erreichen, bietet Docker Docker-Compose an.
 Hierbei handelt es sich um ein Tool von Docker, mit dem es möglich ist, einen Service für eine Anwendung zu konfigurieren und diese sowie die dazugehörigen Container anschließend mit einem einzigen Befehl zu starten.
 
 Hierfür wird zu Beginn ein Dockerfile erstellt, mit dem es möglich ist, die Images und Container einfach zu vervielfältigen.
 Im Anschluss daran wird die YAML-Datei docker-compose.yml genutzt, um den Service zu definieren.
-Code-Beispiel \ref{dockerComposeFile} zeigt, wie in dieser Datei z. B. die zwei Services web und redis definiert werden.
-Des Weiteren wird dargestellt, wie der Service web im Punkt build das Dockerfile aus dem aktuellen Verzeichnis und der Service redis das öffentliche Redis image "redis:alpine" des Docker Hub verwendet.
-Zusätzlich ist ersichtlich, dass der Service web über den default port 5000 des Flask web servers erreichbar ist.
-Mittels des Kommandos docker-compose up wird anschließend die gesamte Anwendung anhand der Compose-Datei gestartet.
+Code-Beispiel \ref{dockerComposeFile} zeigt, wie in dieser Datei z. B. die zwei Services \textit{web} und \textit{redis} definiert werden.
+Des Weiteren wird dargestellt, wie der Service \textit{web} im Punkt \textit{build} das Dockerfile aus dem aktuellen Verzeichnis und der Service \textit{redis} das öffentliche Redis Image \glqq{}redis:alpine\grqq{} des Docker Hub verwendet.
+Zusätzlich ist ersichtlich, dass der Service \textit{web} über den Default-Port 5000 des Flask Web-Servers erreichbar ist.
+Mittels des Kommandos \textit{docker-compose up} wird anschließend die gesamte Anwendung anhand der Docker-Compose-Datei gestartet.
 
 \begin{minipage}{\linewidth}
 	\begin{lstlisting}[frame=single,caption=Beispiel Docker Compose Datei \cite{Docker:online2}, label=dockerComposeFile, language=Scala]
@@ -124,13 +128,13 @@ Mittels des Kommandos docker-compose up wird anschließend die gesamte Anwendung
 	\end{lstlisting}
 \end{minipage}
 
-Mit Hilfe von Compose ist es neben dem Starten des Service, möglich, diesen zu stoppen, erneut zu bauen und Befehle an einzelne Container des Service zu senden.
-Des Weiteren ermöglicht Compose die Statusabfrage sowie das Auslesen von Logs eines laufenden Service.
+Mit Hilfe von Docker-Compose ist es neben dem Starten des Service, möglich, diesen zu stoppen, erneut zu bauen und Befehle an einzelne Container des Service zu senden.
+Des Weiteren ermöglicht Docker-Compose die Statusabfrage sowie das Auslesen von Logs eines laufenden Service.
 
 \subsection{Netzwerke}
 
 Dieser Abschnitt des Kapitels zeigt die default Netzwerke und die Möglichkeiten zum Definieren eines eigenen Netzwerkes in Docker auf.
-Hiermit soll erläutert werden, wie der angelegte Service von außerhalb des Host-Systems verfügbar gemacht wird.
+Hiermit soll erläutert werden, wie der angelegte Service außerhalb des Host-Systems verfügbar gemacht wird.
 
 \subsubsection{Default Netzwerke}
 
@@ -149,7 +153,7 @@ Des Weiteren sind sowohl das None als auch das Host-Netzwerk nicht direkt mit Do
 
 Das dritte default Netzwerk, das Bridge-Netzwerk, ist auf allen Host Systemen von Docker vorhanden.
 Wird kein alternatives Netzwerk definiert, so wird jeder neu erstellte Container automatisch an dieses gekoppelt.
-Die angebundenen Container wären zwar per Port Mapping und mit Hilfe von IP-Adressen, aber nicht mit den Containernamen per DNS-Auflösung, in der Lage miteinander zu kommunizieren, aber dieses Vorgehen wird für das default Bridge-Netzwerk von Docker nicht empfohlen.
+Die angebundenen Container wären zwar durch \textit{Port Mapping} und mit Hilfe von IP-Adressen, aber nicht mit den Container-Namen per DNS-Auflösung, in der Lage miteinander zu kommunizieren, aber dieses Vorgehen wird für das default Bridge-Netzwerk von Docker nicht empfohlen.
 Stattdessen sollte für derartige Anwendungsfälle das, im Abschnitt User definierte Netzwerke, beschriebene Bridge-Netzwerk verwendet werden.
 
 \subsubsection{User definierte Netzwerke}
@@ -166,13 +170,13 @@ Mit diesen ist es möglich, die folgenden Netzwerke anzulegen:
 Wenn keines der gelisteten Netzwerke dem Anwendungsfall entspricht, so besteht die Möglichkeit, ein eigenes Plugin für einen Netzwerk-Treiber zu erstellen.
 Eine genau Beschreibung hierfür sowie für das oben gelistete MACVLAN-Netzwerk würde für diese Arbeit zu weit gehen, weshalb diese an dieser Stelle nur zum Zweck der Vollständigkeit erwähnt werden.
 
-Das User definierte Bridge-Netzwerk bietet mit Hilfe des eingebetteten DNS-Server, des Docker Daemon, eine DNS-Auflösung.
+Das User definierte Bridge-Netzwerk bietet mit Hilfe des eingebetteten DNS-Server des Docker Daemon eine DNS-Auflösung.
 Des Weiteren besteht optional die Möglichkeit zur Steuerung der Kommunikation der sich auf einem Host-System und in einem Netzwerk befindlichen Container.
 Diese können an kein oder jederzeit, auch während der Ausführung eines Containers, an ein oder mehrere Netzwerke angeschlossen oder von diesen getrennt werden.
 Ist dies nicht erforderlich, so sind alle Container ohne weitere Konfiguration in der Lage, mit jedem beliebigen Container des Netzwerkes zu kommunizieren.
 Hieraus geht hervor, dass das Netzwerk die darin befindlichen Container vollständig, wie in Abbildung \ref{fig:dockerportpuex} zu sehen, isoliert.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/DockerPortPuEx}
 	\caption[Docker Netzwerkzugriff]{Diagramm zur Darstellung des Docker Netzwerkzugriffs im User definierten Bridge-Netzwerk}
@@ -180,12 +184,12 @@ Hieraus geht hervor, dass das Netzwerk die darin befindlichen Container vollstä
 	\tiny{\quelle\url{https://docs.docker.com/engine/userguide/networking/}}
 \end{figure}
 
-Möchte man nun in einem default oder User definierten Bridge-Netzwerk eines Host-Systems, wie in Abbildung \ref{fig:dockerportpuex} abgebildet, dass z. B. einzelne Container sich mit einem externem Host oder einem externen Container austauschen können, so ist ein Port exposing und publishing notwendig.
-Das Port exposing erfolgt entweder durch Eintragung einer beliebigen Portnummer in Kombination mit dem Schlüsselwort EXPOSE im Dockerfile oder durch Ergänzung des docker run Kommandos mit dem Flag - -expose.
+Möchte man nun in einem Default oder User definierten Bridge-Netzwerk eines Host-Systems, wie in Abbildung \ref{fig:dockerportpuex} abgebildet, dass z.B. einzelne Container sich mit einem externem Host oder einem externen Container austauschen können, so ist ein \textit{Port exposing} und \textit{Publishing} notwendig.
+Das \textit{Port exposing} erfolgt entweder durch Eintragung einer beliebigen Portnummer in Kombination mit dem Schlüsselwort \textbf{EXPOSE} im Dockerfile oder durch Ergänzung des \textit{docker run} Kommandos mit dem Flag \textit{{-}{-}expose}.
 
-Für das publishing ist das Festlegen eines Ports im Dockerfile nicht möglich.
-Stattdessen wird das docker run Kommando durch das Flag - -publish oder - -publish-all ergänzt.
-Dies teilt mit, welcher Port > 30000 auf dem Host-System verfügbar ist.
+Für das \textit{Publishing} ist das Festlegen eines Ports im Dockerfile nicht möglich.
+Stattdessen wird das \textit{docker run} Kommando durch das Flag \textit{{-}{-}publish} oder \textit{{-}{-}publish-all} ergänzt.
+Dies teilt mit, welcher Port $>30000$ auf dem Host-System verfügbar ist.
 Möchte man dennoch einen speziellen Port verwenden, so ist die Zuweisung des Ports erst zur Laufzeit möglich.
 
 Aufgrund dessen, dass User definierte Bridge-Netzwerke vorrangig dafür verwendet werden kleinere Netzwerke auf einem Host zu erstellen, eignet sich diese Netzwerklösung nicht zur Umsetzung des Themas.
@@ -195,7 +199,7 @@ Das Cluster besitzt mindestens einen Swarm-Manager.
 Dieser nimmt Befehle für den Swarm entgegen und ermöglicht es, neue Swarm-Nodes oder auch Swarm-Worker genannt, aber keine einzelnen Docker-Container zum Cluster hinzuzufügen.
 
 Statt des User definierten Bridge-Netzwerks bietet Docker hierfür die Möglichkeit zur Erstellung eines Overlay-Netzwerks auf einem Swarm-Manager an.
-Hierbei wird automatisch die Netzwerkbrücke docker\_gwbridge, die zur Kommunikation zwischen den Swarm-Nodes verwendet wird, erstellt.
+Hierbei wird automatisch die Netzwerkbrücke \textit{docker\_gwbridge}, die zur Kommunikation zwischen den Swarm-Nodes verwendet wird, erstellt.
 Diese Netzwerkbrücke wird zusätzlich immer dann angelegt, wenn ein gewöhnlicher Docker Container keine Anbindung an ein externes Netz besitzt.
 Der Swarm-Manager gewährt den einzelnen Swarm-Workern immer dann den Zugriff auf das Netzwerk, wenn die Swarm-Worker das Netzwerk zur Bewältigung ihrer Aufgaben benötigen. 
 
@@ -203,7 +207,7 @@ Bei der Erstellung des Overlay-Netzwerks ist zu beachten, dass die Docker Engine
 
 Andernfalls spricht man von einem Overlay-Netzwerk ohne Swarm Modus.
 Dieses wird in dieser Arbeit nicht weiter erläutert.
-Einerseits, da es nicht erforderlich ist und andererseits, da Docker hierzu folgenden Satz in ihrem Docker container networking Guide verfasste:
+Einerseits, da es nicht erforderlich ist und andererseits, da Docker Inc. hierzu folgenden Satz in ihrem \glqq{}Docker container networking Guide\grqq{} verfasste:
 
 \begin{quote}
 	\textit{\glqq{}It may be deprecated in the future \cite{Docker:online3}.\grqq{}}
@@ -222,13 +226,13 @@ Neben dem Nachteil, dass dieses Vorgehen die Container vergrößert, sind die da
 	\tiny{\quelle\url{https://docs.docker.com/engine/admin/volumes/}}
 \end{figure}
 
-Aufgrund dessen bietet Docker zur dauerhaften Sicherung der Daten eines Containers, wie in Abbildung \ref{fig:dockermounts} gezeigt, die Verwendung von bind mounts, tempfs mounts und volumes an.
+Aufgrund dessen bietet Docker zur dauerhaften Sicherung der Daten eines Containers, wie in Abbildung \ref{fig:dockermounts} gezeigt, die Verwendung von \textit{bind mounts}, \textit{tempfs mounts} und \textit{volumes} an.
 
-Hierbei ist einerseits zu beachten, dass tempfs mount vorrangig für Anwendungen mit hoher Performance oder sicherheitskritischen Daten genutzt wird und andererseits, dass Docker die Verwendung von bind mounts in ihrer Dokumentation im Unterkapitel Use binde mounts für neu erstellte Anwendungen nicht empfiehlt. 
+Hierbei ist einerseits zu beachten, dass \textit{tempfs mount} vorrangig für Anwendungen mit hoher Performance oder sicherheitskritischen Daten genutzt wird und andererseits, dass Docker die Verwendung von \textit{bind mounts} in ihrer Dokumentation im Unterkapitel \glqq{}Use bind mounts\grqq{} für neu erstellte Anwendungen nicht empfiehlt. 
 Somit wird lediglich die Datenspeicherung mit Hilfe von Volumes für die Anwendung verwendet und betrachtet.
 
 Neben den Möglichkeiten zur Datensicherung geht aus Abbildung \ref{fig:dockermounts} hervor, dass das Volume in das Dateisystem eines Docker-Containers, im Swarm-Modus auch als Service bezeichnet, gemounted und der Inhalt auf dem Host-System (Windows oder Unix) gespeichert wird. 
-Die Verwaltung des Volumes erfolgt entweder mittels des Docker command line interface oder der Docker API.
+Die Verwaltung des Volumes erfolgt entweder mittels des Docker \ac{CLI} oder der Docker API.
 
 Aufgrund der Anforderung, dass die beiden erzeugten Volumes künftig von mehreren Services genutzt, beschrieben, gelesen und auf einem eigenen Host-System laufen sollten, konnten weder read-only noch lokale Volumens verwendet werden. 
 Stattdessen wurden zwei shared Volumes durch Verwendung eines Volume Treibers realisiert.
@@ -236,6 +240,6 @@ Stattdessen wurden zwei shared Volumes durch Verwendung eines Volume Treibers re
 Hierfür ist das Docker NFS, AWS EFS \& Samaba/CIFS Volume Plugin auf einem eigenen Host-System installiert worden.
 Mit diesem wurde das Volume \textit{gatling-logs} erzeugt, das anschließend zu den Attack Nodes und dem Reporter Node der Anwendung gemountet wurde. 
 Zusätzlich zum \textit{gatling-logs} ist das \textit{gatling-results} Volume erstellt worden. 
-Dieses wurde im Reporter Node und dem Reporter-Viewer Node des Swarms gemountet.
+Dieses wurde im Reporter Node und dem Report-Viewer Node des Swarms gemountet.
 
 Somit verfügt der Reporter Node über alle Daten des Angriffs und leitet diese per \textit{gatling-results} Volume an den Reporter-Viewer Node, der für die Verwertung der Ergebnisse zuständig ist, weiter.
