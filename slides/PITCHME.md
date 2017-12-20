@@ -34,15 +34,19 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 &rarr; Betriebssystemunabhängig  <br/>
 &rarr; geringere Hardware im Vergleich zu VM`s <br/>
 
----?image=assets/images/ContainerArchitecture.png&size=auto 70%
+
++++
+
+### Container Architektur
+
+<img src="assets/images/ContainerArchitecture.png" alt="Container Architektur" style='height: 50%; width: 50%;'/>
+
+
 
 +++
 ### Docker Architektur
 
-&rarr; Client-Server-Architektur <br/>
-&rarr; Server = Docker Daemon <br/>
-&rarr; Verwaltung der Container, Images, Netzwerke, Dateisysteme
-&rarr; Kommunikation mit anderen Docker Daemons
+![Docker Architecture](assets/images/DockerEngine.png)
 
 +++
 
@@ -73,6 +77,19 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 	    image: "redis:alpine"
 ```
 
++++
+
+### Netzwerk
+
+&rarr; Swarm Modus <br/>
+&rarr; Oberlay- Netzwerk 
+
++++
+
+### Docker Mounts
+
+![Docker Mount](assets/images/DockerMounts.png)
+
 ---
 ## Performance Tests
 
@@ -101,8 +118,8 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 
 ### Gatling - OpenHub
 
- > 50k Zeilen Code <br/>
- > 100 Contributors <br/>
+&ge; 50k Zeilen Code <br/>
+&ge; 100 Contributors <br/>
 &rarr; Apache License 2.0 veröffentlicht <br/>
 &rarr; Eigene DSL für Benutzung
 
