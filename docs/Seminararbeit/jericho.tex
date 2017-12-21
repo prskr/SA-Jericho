@@ -52,7 +52,7 @@ Der HTML-Report wird im Shared Volume \textit{gatling-results} abgelegt, damit d
 \subsection{Report-Viewer-Container}
 
 Der letzte Container-Typ ist optional und wurde auch nicht f\"ur das Projekt speziell modifiziert.
-Der Report-Viewer-Container ist ein Container vom Image \textit{nginx:1.13-alpine} und lediglich der Auslieferung des HTML-Reports.
+Der Report-Viewer-Container ist ein Container vom Image \textit{nginx:1.13-alpine} und \"ubernimmt lediglich die Auslieferung des HTML-Reports.
 Alternativ h\"atte man auch in den \textit{Reporter}-Container einen Web-Server integrieren oder die Ergebnisse auf einen externen Persistenz-Layer (vgl. Abschnitt \ref{ss:sharedVolumes}) \"ubertragen k\"onnen.
 
 \section{Deployment}
@@ -76,7 +76,7 @@ Unter anderem sind folgende Varianten zur Umsetzung denkbar:
 	\item Die Simulationsdatei wird auf allen Cluster-Mitgliedern im selben Pfad abgelegt, so dass sie unabh\"angig davon, auf welchem Host ein Attack-Container gestartet wird, verf\"ugbar ist.
 	\item Durch ein sogenanntes \textit{Placement Constraint} werden alle Attack-Container auf einer Cluster-Node, auf der auch die Simulationsdatei vorhanden ist, erzeugt. Dies kann zu Performance-Problemen f\"uhren und sollte daher vermieden werden.
 	\item Die Simulationsdatei wird durch ein read-only Shared Volume allen Attack-Nodes bereitgestellt. Dieses Shared Volume sollte z. B. mit dem bereits erw\"ahnten \textit{Docker NFS, AWS EFS \& Samaba/CIFS Volume Plugin} erzeugt werden, damit es unabh\"angig vom aktuellen Host verf\"ugbar ist.
-	\item Docker Swarm bietet einen speziellen Mechanismus zur Bereitstellung von Konfigurationsdateien, der durch das CMDlet \textit{docker config} kontrolliert wird. Mit diesem k\"onnen entweder einzelne Values oder auch ganze Dateien in einem Docker Swarm internen Key-Value-Store abgelegt und beim Deployment mit Hilfe eines Mount-Point den Containern zur Verf\"ugung gestellt werden. Diese Variante wurde w\"ahrend des Projekts benutzt, da sie auch bequem per remote benutzt werden kann, ohne z. B. mit NFS oder SCP Dateien auf einen Server \"ubertragen zu m\"ussen.
+	\item Docker Swarm bietet einen speziellen Mechanismus zur Bereitstellung von Konfigurationsdateien, der durch das CMDlet \textit{docker config} kontrolliert wird. Mit diesem k\"onnen entweder einzelne Values oder auch ganze Dateien in einem Docker Swarm internen Key-Value-Store abgelegt und beim Deployment mit Hilfe eines Mount-Point den Containern zur Verf\"ugung gestellt werden. Diese Variante wurde w\"ahrend des Projekts benutzt, da sie auch bequem remote benutzt werden kann, ohne z. B. mit NFS oder SCP Dateien auf einen Server \"ubertragen zu m\"ussen.
 \end{itemize}
 
 Die zum Einsatz gekommenen Konfigurationsdateien, sowohl f\"ur das lokale als auch das Cluster basierte Deployment, sind im Anhang zu finden.
