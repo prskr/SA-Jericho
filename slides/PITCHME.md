@@ -1,10 +1,12 @@
 @title[Einführung]
 
+![Containers with machine guns](assets/images/ContainerWithMachineGuns_Web.png)
+
+---
+
 # Container with machine guns
 
 Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
-
----?image=assets/images/ContainerWithMachineGuns_Web.png&size=auto 70%
 
 ---
 
@@ -194,6 +196,29 @@ class RandomJokeSimulation extends Simulation {
 &rarr; Problem ist das Finden der flüchtigen Pods <br/>
 &rarr; Lösung mit zentralen Services - konfigurierbar <br/>
 &rarr; Routen Netzwerkverkehr zu passenden Nodes
+
+---
+
+### DEMO
+
+![Demotime](assets/images/hammertime.gif)
+
+---
+
+### Ergebnisse der Lasttests
+
+&rarr; Antwortzeiten der Applikatino steigen direkt prortional mit der Zahl der Attack Nodes <br/>
+&rarr; Durchsatz der Requests pro Sekunde indirekt prortional zur Zahl der Attack Nodes
+
++++
+
+### Bewertung der Ergebnisse
+
+&rarr; Bereitstellung der Container erfolgt nicht gleichzeitig <br/>
+&rarr; Keine echte Garantie, dass alle Tests gleichzeitig ausgeführt werden <br/>
+&rarr; HTML Report enthält keine Laufzeit der einzelnen Tests
+
+
 ---
 
 ### Fazit & Ausblick
