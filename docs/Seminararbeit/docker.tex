@@ -154,7 +154,7 @@ Des Weiteren sind sowohl das None als auch das Host-Netzwerk nicht direkt mit Do
 
 Das dritte default Netzwerk, das Bridge-Netzwerk, ist auf allen Host Systemen von Docker vorhanden.
 Wird kein alternatives Netzwerk definiert, so wird jeder neu erstellte Container automatisch an dieses gekoppelt.
-Die angebundenen Container wären zwar durch \textit{Port Mapping} und mit Hilfe von IP-Adressen, aber nicht mit den Container-Namen per DNS-Auflösung, in der Lage, miteinander zu kommunizieren, aber dieses Vorgehen wird für das default Bridge-Netzwerk von Docker nicht empfohlen.
+Die angebundenen Container wären zwar durch \textit{Port Mapping} und mit Hilfe von IP-Adressen, aber nicht mit den Container-Namen, die mittels des \ac{DNS} aufgelöst werden, in der Lage, miteinander zu kommunizieren. Dieses Vorgehen wird jedoch nicht für das default Bridge-Netzwerk von Docker empfohlen.
 Stattdessen sollte für derartige Anwendungsfälle das, im Abschnitt User definierte Netzwerke, beschriebene Bridge-Netzwerk verwendet werden.
 
 \subsubsection{User definierte Netzwerke}
@@ -171,7 +171,7 @@ Mit diesen ist es möglich, die folgenden Netzwerke anzulegen:
 Wenn keines der gelisteten Netzwerke dem Anwendungsfall entspricht, so besteht die Möglichkeit, ein eigenes Plugin für einen Netzwerk-Treiber zu erstellen.
 Eine genaue Beschreibung hierfür sowie für das oben gelistete MACVLAN-Netzwerk würde für diese Arbeit zu weit gehen, weshalb diese an dieser Stelle nur zum Zweck der Vollständigkeit erwähnt werden.
 
-Das User definierte Bridge-Netzwerk bietet mit Hilfe des eingebetteten DNS-Server des Docker Daemon eine DNS-Auflösung.
+Das User definierte Bridge-Netzwerk bietet mit Hilfe des eingebetteten \ac{DNS}-Server des Docker Daemon eine \ac{DNS}-Auflösung.
 Des Weiteren besteht optional die Möglichkeit zur Steuerung der Kommunikation der sich auf einem Host-System und in einem Netzwerk befindlichen Container.
 Diese können an kein oder jederzeit, auch während der Ausführung eines Containers, an ein oder mehrere Netzwerke angeschlossen oder von diesen getrennt werden.
 Ist dies nicht erforderlich, so sind alle Container ohne weitere Konfiguration in der Lage, mit jedem beliebigen Container des Netzwerkes zu kommunizieren.
