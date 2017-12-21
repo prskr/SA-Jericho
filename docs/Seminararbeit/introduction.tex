@@ -1,11 +1,22 @@
 \chapter{Einleitung}
-Das stark zunehmende Outsourcing in die Cloud beschränkt sich lange nicht mehr auf bloße Daten. Mittlerweile werden ganze Rechenzentren mit hunderten von Applikationen migriert, da es in vielen Fällen nicht mehr rentabel ist diese selbst zu hosten.
-Auch die Anforderungen ändern sich mittlerweile und moderne Applikationen müssen in der Lage sein auch bei erhöhter Anzahl von Anfragen weiterhin reibungslos zu arbeiten.\\
-Abhilfe dafür schafft das Cloud Buzzwort Skalierung, frei nach dem Motto \textit{viel hilft viel}. Heute laufen Anwendungen häufig in einem Cluster der dynamisch auf sich ändernde Anforderungen reagieren kann. Erhöht die Anzahl der Anfragen, so werden im Cluster einfach neue Instanzen der Applikation gestartet um die gestiegene Last verarbeiten zu können und werden danach wieder heruntergefahren.
+Das stark zunehmende Outsourcing in die Cloud beschränkt sich lange nicht mehr auf bloße Daten.
+Mittlerweile werden ganze Rechenzentren mit hunderten von Applikationen migriert, da es in vielen Fällen nicht mehr rentabel ist, diese selbst zu hosten.
+Auch die Anforderungen ändern sich mittlerweile und moderne Applikationen müssen in der Lage sein, auch bei erhöhter Anzahl von Anfragen weiterhin reibungslos zu arbeiten.
+
+Abhilfe dafür schafft das Cloud Buzzwort Skalierung, frei nach dem Motto \textit{viel hilft viel}.
+Heute laufen Anwendungen häufig in einem Cluster, der dynamisch auf sich ändernde Anforderungen reagieren kann. 
+Erhöht sich die Anzahl der Anfragen, so werden im Cluster einfach neue Instanzen der Applikation gestartet um die gestiegene Last verarbeiten zu können. 
+Werden diese nicht mehr benötigt, ist es möglich, diese einfach wieder herunterzufahren.
 \\\\
-Doch wie testet man ob die Anwendung schnell genug skaliert, wie viele Anfragen hält sie aus, bei welcher Last bricht sie doch ein?\\
-Dafür gibt es verschiedene Tools für Lasttests, eines davon ist Gatling.\\
-Gatling ermöglicht es einem Testszenarios zu entwerfen, um damit die gewünschte Applikation immer wieder unter den gleichen Bedingungen unter Last zu setzen und zu messen wie diese darauf reagiert.\\
-Ziel dieser Projektarbeit war es, die Skalierbarkeit die die Cloud für Container-Anwendungen bringt, auch auf das Tool für Lasttests anzuwenden. Zum einen, um dieses unabhängig von einer konkreten Plattform betreiben zu können, zum anderen, um die maximal erzeugte Last erhöhen zu können wenn auch der Lasttest im Cluster läuft. Siehe \textit{viel hilft viel}.\\\\
-In den nächsten Kapitel werden durch Einführung in Docker und Gatling die für das Verständnis nötigen Grundlagen geschaffen, sowie Kubernetes als Beispiel für ein Tool zum Management von Container Clustern vorgestellt. Danach werden die Container mit dem Gatling Maschinengewehr bestückt und eine kleine Demo Applikation unter Last gesetzt um das Ergebnis der Projektarbeit anhand eines konkreten Testfalls zu zeigen. Die Resultate der verschiedenen Testkonfigurationen werden anschließend gegeneinander verglichen, um ein Fazit daraus ziehen zu können.\\
+Doch wie testet man ob die Anwendung schnell genug skaliert, wie viele Anfragen sie aushält, bei welcher Last sie doch einbricht?
+
+Dafür gibt es verschiedene Tools für Lasttests, eines davon ist Gatling.
+
+Gatling ermöglicht es einem, Testszenarios zu entwerfen, um damit die gewünschte Applikation immer wieder unter den gleichen Bedingungen unter Last zu setzen und zu messen, wie diese darauf reagiert.
+
+Ziel dieser Projektarbeit war es, die Skalierbarkeit, die die Cloud für Container-Anwendungen bringt, auch auf das Tool für Lasttests anzuwenden. 
+Zum einen, um dieses unabhängig von einer konkreten Plattform betreiben zu können, zum anderen, um die maximal erzeugte Last erhöhen zu können, wenn auch der Lasttest im Cluster läuft, siehe \textit{viel hilft viel}.\\\\
+In den nächsten Kapiteln werden durch Einführung in Docker und Gatling die für das Verständnis nötigen Grundlagen geschaffen sowie Kubernetes als Beispiel für ein Tool zum Management von Container Clustern vorgestellt.
+Danach werden die Container mit dem Gatling Maschinengewehr bestückt und eine kleine Demo-Applikation unter Last gesetzt, um das Ergebnis der Projektarbeit anhand eines konkreten Testfalls zu zeigen. Die Resultate der verschiedenen Testkonfigurationen werden anschließend gegeneinander verglichen, um ein Fazit daraus ziehen zu können.
+
 Als Abschluss dieser Arbeit wird noch ein kurzer Ausblick gegeben, welche Schritte vorgenommen werden können, um die Applikation für den Betrieb im Cluster zu optimieren.

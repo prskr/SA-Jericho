@@ -1,11 +1,11 @@
 \chapter{Jericho}
 
-Jericho ist der Arbeitstitel des Proof-of-Concept Gatling Lasttests mit Hilfe von Docker Containern durchzuführen.
-Wie in Kapitel \ref{c:docker} beschrieben eignen sich Docker Container sehr gut dafür Software zu paketieren, da ein Container einerseits alle notwendigen Abhängigkeiten mitbringen und andererseits nach Verwendung auf einen definierten Startzustand zurückgesetzt werden kann.
+Jericho ist der Arbeitstitel des Proof-of-Concept Gatling Lasttests mit Hilfe von Docker-Containern durchzuführen.
+Wie in Kapitel \ref{c:docker} beschrieben eignen sich Docker-Container sehr gut dafür Software zu paketieren, da ein Container einerseits alle notwendigen Abhängigkeiten mitbringen und andererseits nach Verwendung auf einen definierten Startzustand zurückgesetzt werden kann.
 
 Weitere Vorteile von Containern im Kontext von Lasttests sind die bereits erwähnte horizontale Skalierbarkeit und das Ressourcenmanagement.
-Ersteres ermöglicht es einerseits höhere Lasten zu erzeugen aber auch andererseits die dynamische Skalierung der Anwendung um Testen zu können, wie stark man die Anwendung skalieren muss um die erwartete Last verarbeiten zu können.
-Zweiteres kann nützlich sein, wenn man bspw. ermitteln will wie viel Leistung ein Container oder eine \ac{VM} benötigt, wenn die erwartete Last in etwa bekannt ist.
+Ersteres ermöglicht es einerseits höhere Lasten zu erzeugen, aber auch andererseits die dynamische Skalierung der Anwendung, um testen zu können, wie stark man die Anwendung skalieren muss, um die erwartete Last verarbeiten zu können.
+Zweiteres kann nützlich sein, wenn man bspw. ermitteln will, wie viel Leistung ein Container oder eine \ac{VM} benötigt, wenn die erwartete Last in etwa bekannt ist.
 Dies unterstützt die Entwickler bei der Kostenkalkulation im Rahmen von Cloud-Hosting (AWS, Azure, etc.)
 
 \section{Architektur}
@@ -30,13 +30,13 @@ Das Skript \textit{attacks.sh} beinhaltet im Wesentlichen vier Schritte:
 
 \begin{enumerate}
 	\item Soweit vorhanden l\"oschen von Ergebnissen vorheriger Testl\"aufe aus dem Shared Volume \textit{gatling-logs} (vgl. Abschnitt \ref{ss:sharedVolumes}).
-	\item Starten von Gatling mit einigen \ac{CLI}-Switches um zu gew\"ahrleisten, dass keine User-Interkation notwendig ist wenn ein Testlauf gestartet wird.
-	\item Verschieben der aktuellen Test-Ergebnisse in das Shared Volume \textit{gatling-logs}. Die Log-Datei wird dabei umbenannt um Dateinamenkonflikte mehrerer Attack-Container zu vermeiden.
-	\item Blockieren des Containers durch einen ewigen \glqq{}sleep\grqq{} um zu vermeiden, dass der Container von einem Clustermanagementsystem neu gestartet wird, sobald er sich beendet.
+	\item Starten von Gatling mit einigen \ac{CLI}-Switches, um zu gew\"ahrleisten, dass keine User-Interkation notwendig ist, wenn ein Testlauf gestartet wird.
+	\item Verschieben der aktuellen Test-Ergebnisse in das Shared Volume \textit{gatling-logs}. Die Log-Datei wird dabei umbenannt, um Dateinamenkonflikte mehrerer Attack-Container zu vermeiden.
+	\item Blockieren des Containers durch einen ewigen \glqq{}sleep\grqq{}, um zu vermeiden, dass der Container von einem Clustermanagementsystem neu gestartet wird, sobald er sich beendet.
 \end{enumerate}
 
 Der Container ist dabei so entworfen, dass auszuf\"uhrende Simulationen im Default-Verzeichnis \textit{/opt/gatling/user-files/simulations/} abgelegt werden \textbf{m\"ussen}.
-Es gilt au\ss{}erdem zu beachten, dass niemals mehr als eine Simulation (vgl. Abschnitt \ref{sec:testWithGatlingExample}) in dem Verzeichnis abgelegt werden darf, da Gatling ansonsten in einen interaktiven Modus wechselt um zu erfragen welche Simulation ausgef\"uhrt werden soll.
+Es gilt au\ss{}erdem zu beachten, dass niemals mehr als eine Simulation (vgl. Abschnitt \ref{sec:testWithGatlingExample}) in dem Verzeichnis abgelegt werden darf, da Gatling ansonsten in einen interaktiven Modus wechselt, um zu erfragen, welche Simulation ausgef\"uhrt werden soll.
 
 \subsection{Reporter-Container}
 
@@ -44,7 +44,7 @@ Auch das \textit{Reporter}-Container-Image basiert auf dem offiziellen Java-Imag
 Im Gegensatz zum Attack-Container, der je nach Bedarf mehrmals gestartet werden kann, sollte vom Reporter-Container nur eine Instanz gestartet werden.
 Der Reporter-Container \"ubernimmt die Aufgabe alle Ergebnisse der Attack-Container zu analysieren und in einen HTML-Report zu aggregieren.
 Zu diesem Zweck \"uberwacht er den Inhalt des Shared Volume \textit{gatling-logs} und im Fall einer \"Anderung wird der HTML-Report neu erzeugt.
-Um \"Anderungen zuverl\"a\ss{}ig erkennen zu k\"onnen wird im Abstand von 10s der gesamte Inhalt des Shared Volume mit Hilfe des Linux-CMDlets \textit{tar} in einen Dateistream geschrieben, von welchem dann ein MD5-Hash\footnote{nat\"urlich k\"onnte man auch andere Hashing-Verfahren nutzen aber MD5 bietet in diesem Fall eine ausreichende Kollisionssicherheit im Verh\"altnis zur ben\"otigten Leistung.} erzeugt wird.
+Um \"Anderungen zuverl\"a\ss{}ig erkennen zu k\"onnen, wird im Abstand von 10s der gesamte Inhalt des Shared Volume mit Hilfe des Linux-CMDlets \textit{tar} in einen Dateistream geschrieben, von welchem dann ein MD5-Hash\footnote{nat\"urlich k\"onnte man auch andere Hashing-Verfahren nutzen, aber MD5 bietet in diesem Fall eine ausreichende Kollisionssicherheit im Verh\"altnis zur ben\"otigten Leistung.} erzeugt wird.
 \"Andert sich der Hashwert, wird der HTML-Report neu erzeugt.
 
 Der HTML-Report wird im Shared Volume \textit{gatling-results} abgelegt, damit der Report-Viewer-Container diesen ausliefern kann.
@@ -73,23 +73,22 @@ Bei einem Deployment in einem Docker Swarm Cluster ist dies nur unter bestimmten
 Unter anderem sind folgende Varianten zur Umsetzung denkbar:
 
 \begin{itemize}
-	\item Die Simulationsdatei wird auf allen Cluster-Mitgliedern im selben Pfad abgelegt, so dass sie unabh\"angig davon auf welchem Host ein Attack-Container gestartet wird verf\"ugbar ist.
-	\item Durch ein sogenanntes \textit{Placement Constraint} werden alle Attack-Container auf einer Cluster-Node, auf der auch die Simulationsdatei vorhanden ist erzeugt. Dies kann zu Performance-Problemen f\"uhren und sollte daher vermieden werden.
-	\item Die Simulationsdatei wird durch ein read-only Shared Volume allen Attack-Nodes bereitgestellt. Dieses Shared Volume sollte z.B. mit dem bereits erw\"ahnten \textit{Docker NFS, AWS EFS \& Samaba/CIFS Volume Plugin} erzeugt werden, damit es unabh\"angig vom aktuellen Host verf\"ugbar ist.
-	\item Docker Swarm bietet einen speziellen Mechanismus zur Bereitstellung von Konfigurationsdateien, der durch das CMDlet \textit{docker config} kontrolliert wird. Mit diesem k\"onnen entweder einzelne Values oder auch ganz Dateien in einem Docker Swarm internen Key-Value-Store abgelegt und beim Deployment mit Hilfe eines Mount-Point den Containern zur Verf\"ugung gestellt werden. Diese Variante wurde w\"ahrend des Projekts benutzt, da sie auch bequem remote benutzt werden kann ohne z.B. mit NFS oder SCP Dateien auf einen Server \"ubertragen zu m\"ussen.
+	\item Die Simulationsdatei wird auf allen Cluster-Mitgliedern im selben Pfad abgelegt, so dass sie unabh\"angig davon, auf welchem Host ein Attack-Container gestartet wird, verf\"ugbar ist.
+	\item Durch ein sogenanntes \textit{Placement Constraint} werden alle Attack-Container auf einer Cluster-Node, auf der auch die Simulationsdatei vorhanden ist, erzeugt. Dies kann zu Performance-Problemen f\"uhren und sollte daher vermieden werden.
+	\item Die Simulationsdatei wird durch ein read-only Shared Volume allen Attack-Nodes bereitgestellt. Dieses Shared Volume sollte z. B. mit dem bereits erw\"ahnten \textit{Docker NFS, AWS EFS \& Samaba/CIFS Volume Plugin} erzeugt werden, damit es unabh\"angig vom aktuellen Host verf\"ugbar ist.
+	\item Docker Swarm bietet einen speziellen Mechanismus zur Bereitstellung von Konfigurationsdateien, der durch das CMDlet \textit{docker config} kontrolliert wird. Mit diesem k\"onnen entweder einzelne Values oder auch ganze Dateien in einem Docker Swarm internen Key-Value-Store abgelegt und beim Deployment mit Hilfe eines Mount-Point den Containern zur Verf\"ugung gestellt werden. Diese Variante wurde w\"ahrend des Projekts benutzt, da sie auch bequem per remote benutzt werden kann, ohne z. B. mit NFS oder SCP Dateien auf einen Server \"ubertragen zu m\"ussen.
 \end{itemize}
 
-Die zum Einsatz gekommenen Konfigurationsdateien sowohl f\"ur das lokale als auch das Cluster basierte Deployment sind im Anhang zu finden.
-W\"ahrend die Docker-Compose Konfigurationen kaum einer Anpassung bed\"urfen (abgesehen von dem Mount-Point f\"ur die Simulationsdatei) m\"ussen f\"ur das Deployment auf einen Docker Swarm einige Vorbereitungen getroffen werden.
+Die zum Einsatz gekommenen Konfigurationsdateien, sowohl f\"ur das lokale als auch das Cluster basierte Deployment, sind im Anhang zu finden.
+W\"ahrend die Docker-Compose Konfigurationen kaum einer Anpassung bed\"urfen (abgesehen von dem Mount-Point f\"ur die Simulationsdatei), m\"ussen f\"ur das Deployment auf einen Docker Swarm einige Vorbereitungen getroffen werden.
 Eine genaue Beschreibung w\"urde allerdings den Rahmen dieser Arbeit sprengen.
-Bei Interesse gibt das Projektteam gerne Auskunft dar\"uber welche Schritte im Detail durchgef\"uhrt werden m\"ussen.
 
 \section{Demo-Anwendung}
 
-Um die beschriebene Zusammenstellung von Containern testen zu k\"onnen bedurfte es einer Testanwendung, die unkompliziert bereitgestellt werden kann, \"uber eine REST-API verf\"ugt und bestenfalls sogar skaliert werden kann.
-Auf eine REST-API h\"atte ggf. auch verzichtet werden k\"onnen allerdings ist es deutlich einfacher eine REST-API zu testen als eine vollst\"andige Web-Applikation, da bei ersterer nur primitive JSON-Objekte empfangen und versendet werden m\"ussen statt Form-POSTs und umst\"andliche Query-Strings zu generieren, parsen und verarbeiten zu m\"ussen.
+Um die beschriebene Zusammenstellung von Containern testen zu k\"onnen, bedurfte es einer Testanwendung, die \"uber eine REST-API verf\"ugt, unkompliziert bereitgestellt und bestenfalls sogar skaliert werden kann.
+Auf eine REST-API h\"atte ggf. auch verzichtet werden k\"onnen, allerdings ist es deutlich einfacher eine REST-API zu testen als eine vollst\"andige Web-Applikation, da bei ersterer nur primitive JSON-Objekte empfangen und versendet werden, statt Form-POSTs und umst\"andliche Query-Strings zu generieren, parsen und verarbeiten zu m\"ussen.
 
-Um volle Flexibilit\"at genie\ss{}en und auf eventuelle zus\"atzliche Anforderungen reagieren zu k\"onnen wurde eine Demo-Anwendung mit Hilfe des Frameworks Vert.x~\cite{Vertx:online} implementiert.
+Um volle Flexibilit\"at genie\ss{}en und auf eventuelle zus\"atzliche Anforderungen reagieren zu k\"onnen, wurde eine Demo-Anwendung mit Hilfe des Frameworks Vert.x~\cite{Vertx:online} implementiert.
 Die Anwendung und ihre API ist der ICNDB~\cite{ICNDB:online} nachempfunden und benutzt als Persistence Layer eine PostgreSQL Datenbank.
 
-Das Deployment der Demo-Anwendung wurde auch mit Docker realisiert wodurch es allen Projekt-Teilnehmern erm\"oglicht wurde die Anwendung ohne ein aufwendigeres Setup benutzen zu k\"onnen.
+Das Deployment der Demo-Anwendung wurde auch mit Docker realisiert, wodurch es allen Projekt-Teilnehmern erm\"oglicht wurde, die Anwendung ohne ein aufwendigeres Setup benutzen zu k\"onnen.

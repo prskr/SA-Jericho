@@ -1,10 +1,10 @@
 \chapter{Tests und Bewertung}
 
-Nach Fertigstellung des Proof-of-Concepts wurde eine Reihe von Tests mit unterschiedlichen Konfigurationen durchgef\"uhrt um die Auswirkungen verschiedener Parameter auf die Ergebnisse des Lasttests der Demo-Anwendung beobachten zu k\"onnen.
+Nach Fertigstellung des Proof-of-Concepts wurde eine Reihe von Tests mit unterschiedlichen Konfigurationen durchgef\"uhrt, um die Auswirkungen verschiedener Parameter auf die Ergebnisse des Lasttests der Demo-Anwendung beobachten zu k\"onnen.
 Bei der Testreihe wurden folgende Parameter variiert:
 
 \begin{itemize}
-	\item Anzahl der Attack-Container (1-6 Instanzen)
+	\item Anzahl der Attack-Container (1 - 6 Instanzen)
 	\item Anzahl der Demo-App-Container(1 oder 3 Instanzen)
 	\item Anzahl der parallelen User (300, 600 oder 1000)
 	\item Anzahl der Requests, die jeder User ausf\"uhrt (300, 500 oder 800)
@@ -14,33 +14,33 @@ Bei der Testreihe wurden folgende Parameter variiert:
 \label{s:valuationInterpretation}
 
 Tabelle \ref{tbl:testResults} zeigt die aggregierten Ergebnisse der Testreihe.
-F\"ur die folgenden Beobachtung wird die erste Testreihe, bei der nur 1 Demo-App Container vorhanden war zun\"achst au\ss{}en vor gelassen.
+F\"ur die folgenden Beobachtung wird die erste Testreihe, bei der nur ein Demo-App Container vorhanden war, zun\"achst au\ss{}en vor gelassen.
 
-Das Zeitverhalten in Abh\"angigkeit zur Anzahl der parallelen User und der Anzahl der Attack Container ist mehr oder weniger wie erwartet.
-So verdoppelt sich das 99\% Quantil und die durchschnittliche Antwortzeit in etwa, bei der Steigerung der User von 300 auf 1000 bei 1 Attack Container.
-Nahezu direkt proportional ist das Verh\"altnis wenn man die Steigerung der Anzahl von Usern bei jeweils 6 Containern betrachtet.
+Das Zeitverhalten in Abh\"angigkeit zur Anzahl der parallelen User und der Anzahl der Attack-Container ist mehr oder weniger wie erwartet.
+So verdoppelt sich das 99\% Quantil und die durchschnittliche Antwortzeit, bei der Steigerung der User von 300 auf 1000 bei einem Attack-Container.
+Nahezu direkt proportional ist das Verh\"altnis, wenn man die Steigerung der Anzahl von Usern bei jeweils 6 Containern betrachtet.
 
 Interessanter ist wie sich der Durchsatz der Anwendung ver\"andert.
-Egal ob nun bei 600 oder 1000 parallele User oder ob diese jeweils 500 oder 800 Requests ausf\"uhren, die durchschnittliche Anzahl von Requests die pro Sekunde verarbeitet werden verh\"alt sich indirekt proportional zur Anzahl der Attack-Container.
+Egal ob nun 600 oder 1000 parallele User oder ob diese jeweils 500 oder 800 Requests ausf\"uhren, die durchschnittliche Anzahl von Requests, die pro Sekunde verarbeitet werden, verh\"alt sich indirekt proportional zur Anzahl der Attack-Container.
 
-Die erste Testreihe bei der nur ein Demo-App Container verf\"ugbar war widerspricht diesen Beobachtungen interessanterweise.
+Die erste Testreihe, bei der nur ein Demo-App Container verf\"ugbar war, widerspricht diesen Beobachtungen interessanterweise.
 So ist es bei dieser Testreihe schwierig eine Tendenz des Durchsatzes festzustellen.
 Das Zeitverhalten bleibt aber auch bei dieser Testreihe mehr oder minder im Erwartungsrahmen.
-So verh\"alt sich sowohl das 99\% Quantil als auch die durchschnittliche Antwortzeit proportional zur Anzahl der Attack Container.
+So verh\"alt sich sowohl das 99\% Quantil als auch die durchschnittliche Antwortzeit proportional zur Anzahl der Attack-Container.
 M\"ogliche Ursachen f\"ur die Unsch\"arfen bei den Testwerten und allgemeine Probleme werden im Abschnitt~\ref{s:valuationProblems} diskutiert.
 
 Leider enth\"alt der von Gatling erzeugte HTML-Report nicht die Gesamtzeit, die eine Simulation in Anspruch genommen hat.
-Daher l\"asst sich die These der Gruppe, dass die Anzahl der Requests, die jeder User w\"ahrend einer Simulation ausf\"uhrt, sich nur auf die Dauer der Simulation nicht aber auf Durchsatz oder Zeitverhalten auswirkt nur anhand der Log-Dateien zweifelsfrei nachweisen.
-Da diese aber sehr umfangreich sind (mehr als 2GB f\"ur die in Tabelle~\ref{tbl:testResults} gezeigte Testreihe) wird im Weiteren darauf verzichtet.
+Daher l\"asst sich die These der Gruppe, dass die Anzahl der Requests, die jeder User w\"ahrend einer Simulation ausf\"uhrt, sich nur auf die Dauer der Simulation, nicht aber auf Durchsatz oder Zeitverhalten auswirkt, nur anhand der Log-Dateien zweifelsfrei nachweisen.
+Da diese aber sehr umfangreich sind (mehr als 2GB f\"ur die in Tabelle~\ref{tbl:testResults} gezeigte Testreihe), wird im Weiteren darauf verzichtet.
 
 \section{Probleme der Auswertung}
 \label{s:valuationProblems}
 
-W\"ahrend der Durchf\"uhrung der Testreihe zeigte sich wiederholt das Verhalten, dass bei $n$ gestarteten Container $n-1$ Container verh\"altnism\"a\ss{}ig schnell gestartet wurden, der n-te Container aber unverh\"altnism\"a\ss{}ig lang ben\"otigte um vom Cluster bereitgestellt zu werden.
+W\"ahrend der Durchf\"uhrung der Testreihe zeigte sich wiederholt das Verhalten, dass bei $n$ gestarteten Container $n-1$ Container verh\"altnism\"a\ss{}ig schnell gestartet wurden, der n-te Container aber unverh\"altnism\"a\ss{}ig lang ben\"otigte, um vom Cluster bereitgestellt zu werden.
 Das Test-Cluster bestand aus 3 Nodes, die alle gleichm\"a\ss{}ig belastet werden sollten.
-Es wurde keine gesonderte Konfiguration vorgenommen um das Platzierungsverhalten der Container irgendwie zu beeinflussen.
-Da alle ben\"otigten Container Images bereits vor der Testreihe auf allen Hosts verf\"ugbar waren scheidet auch die Begr\"undung aus, dass einer der Hosts das Image noch herunterladen musste.
-Auch ein Neustart aller Hosts, das entfernen aller Images und einige andere Versuche \"anderten nichts an diesem Verhalten.
+Es wurde keine gesonderte Konfiguration vorgenommen, um das Platzierungsverhalten der Container irgendwie zu beeinflussen.
+Da alle ben\"otigten Container Images bereits vor der Testreihe auf allen Hosts verf\"ugbar waren, scheidet auch die Begr\"undung aus, dass einer der Hosts das Image noch herunterladen musste.
+Auch ein Neustart aller Hosts, das Entfernen aller Images und einige andere Versuche \"anderten nichts an diesem Verhalten.
 
 Leider k\"onnte dieses Verhalten allerdings einige Kennzahlen durchaus beeintr\"achtigen.
 Speziell unter der Pr\"amisse, dass bei weniger Requests pro User die Simulation sehr schnell abgeschlossen ist, k\"onnte es zu F\"allen kommen, dass gar nicht alle Container echt parallel die Demo-Applikation unter Last setzen.
@@ -57,7 +57,7 @@ Auch deshalb wurde diese Testreihe im Abschnitt~\ref{s:valuationInterpretation} 
 		\label{tbl:testResults}
 		\begin{tabular}{|l|l|l|l|l|l|l|l|}
 		\hline
-Demo-App  Container & Attack Container & Parallele User & Requests/User & Requests gesamt & Mean Requests/s & 99\% Quantil & Mean \\ \hline
+Demo-App  Container & Attack-Container & Parallele User & Requests/User & Requests gesamt & Mean Requests/s & 99\% Quantil & Mean \\ \hline
 1                   & 1                & 300            & 300           & 90.000          & 6.923           & 106          & 39   \\ \hline
 1                   & 2                & 300            & 300           & 180.000         & 7.200           & 130          & 62   \\ \hline
 1                   & 3                & 300            & 300           & 270.000         & 5.510           & 143          & 65   \\ \hline
