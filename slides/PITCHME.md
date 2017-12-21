@@ -27,7 +27,6 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 &rarr; Wie stabil ist die Softwarearchitektur? <br/>
 &rarr; Skalierung in der Cloud <br/>
 
-
 ---
 
 ### Docker
@@ -36,16 +35,14 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 &rarr; Betriebssystemunabhängig  <br/>
 &rarr; geringere Hardware im Vergleich zu VM`s <br/>
 
-
 +++
 
 ### Container Architektur
 
 <img src="assets/images/ContainerArchitecture.png" alt="Container Architektur" style='height: 50%; width: 50%;'/>
 
-
-
 +++
+
 ### Docker Architektur
 
 ![Docker Architecture](assets/images/DockerEngine.png)
@@ -55,19 +52,20 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 ### Docker Registry
 
 &rarr; Jedes Image verfügt über "Tag" <br/>
-&rarr; Privates vs. öffentliches Registries <br/>
+&rarr; Private vs. öffentliche Registries <br/>
 &rarr; DockerHub, Docker Cloud
 
 +++
 
-### Docker Compose
+### Docker-Compose
 
 &rarr; Mehrere Container gleichzeitig benötigt <br/>
-&rarr; Verwaltung mit Dockerfiles - Starten mit einem Befehl <br/>
+&rarr; Verwaltung mit Docker-Compose.yml - Starten mit einem Befehl <br/>
 
 +++
 
-### Beispiel: Docker Compose
+### Beispiel: Docker-Compose
+
 ```docker
 	version: '3'
 	services:
@@ -84,7 +82,7 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 ### Netzwerk
 
 &rarr; Swarm Modus <br/>
-&rarr; Oberlay- Netzwerk 
+&rarr; Overlay- Netzwerk
 
 +++
 
@@ -95,7 +93,7 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 ---
 ## Performance Tests
 
-&rarr; ISO 9126 regelt Software Qualität <br/>
+&rarr; ISO 9126 regelt Softwarequalität <br/>
 &rarr; Punkt Effizienz mit Zeitverhalten und Ressourcenverbrauch <br/>
 &rarr; Finden von Bottlenecks <br/>
 
@@ -106,7 +104,7 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 &rarr; Vorhersage von Bottlenecks <br/>
 &rarr; Skalierung der Anwendung  <br/>
 &rarr; Feedback für Benutzer verbessern <br/>
-&rarr; Verbesserung / Optimierung der Software Architektur <br/>
+&rarr; Verbesserung / Optimierung der Softwarearchitektur <br/>
 
 +++
 
@@ -116,7 +114,7 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 &rarr; 20. Dezember 2011 veröffentlicht <br/>
 &rarr; in Scala implementiert <br/>
 
-+++ 
++++
 
 ### Gatling - OpenHub
 
@@ -129,9 +127,9 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 
 ### Gatling - Continous Integration
 
-&rarr; Integrierbar in CI Umgebung (bsp. Jenkins) <br/>
+&rarr; Integrierbar in CI Umgebung (bspw. Jenkins) <br/>
 &rarr; schnelles Feedback für Entwickler <br/>
-&rarr; Änderung in Verhalten der Software - Anpassung der Software Architektur
+&rarr; Änderung in Verhalten der Software - Anpassung der Softwarearchitektur
 
 +++
 
@@ -143,16 +141,21 @@ class RandomJokeSimulation extends Simulation {
         .baseURL("http://192.168.111.20:58080")
         .acceptHeader("application/json")
         .acceptEncodingHeader("gzip, deflate")
-        .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
+
     val scn = scenario("RandomJokeSimulation").repeat(100) {
         exec(http("getRandomJoke")
         .get("/api/v1/joke/random"))
-    }    
+    }
     setUp(
         scn.inject(atOnceUsers(100))
     ).protocols(httpConf)
 }
 ```
+
+@[2-5](Initialisierung der HTTP Konfiguration: Header, Host, Encoding,...)
+@[7-9](Setup des Szenario: welcher Endpoint wird wie oft aufgerufen)
+@[10-13](Setup des Tests: wie viele parallele User, welches Protokoll, ...)
+
 ---
 
 ### Kubernetes
@@ -163,11 +166,15 @@ class RandomJokeSimulation extends Simulation {
 
 +++
 
+@title[Kubernetes Architektur - Übersicht]
+
 ### Kubernetes Architektur
 
 ![Kubernetes Architektur](assets/images/Kubernetes.png)
 
-+++ 
++++
+
+@title[Kubernetes Architektur - Komponenten]
 
 ### Kubernetes Architektur
 
@@ -181,9 +188,10 @@ class RandomJokeSimulation extends Simulation {
 
 &rarr; Automatische Horizontale Skalierung <br/>
 &rarr; Horizontal Pod Autoscaler = Konfiguration über Auslastung <br/>
-&rarr; Schwellenwerte für Skalierung beachten 
+&rarr; Schwellenwerte für Skalierung beachten
 
 +++
+
 ### Persistenz
 
 &rarr; Generelles Problem von Container-Anwendungen <br/>
@@ -207,7 +215,7 @@ class RandomJokeSimulation extends Simulation {
 
 ### Ergebnisse der Lasttests
 
-&rarr; Antwortzeiten der Applikatino steigen direkt proportional mit der Zahl der Attack Nodes <br/>
+&rarr; Antwortzeiten der Applikation steigen direkt proportional mit der Zahl der Attack Nodes <br/>
 &rarr; Durchsatz der Requests pro Sekunde verhält sich indirekt proportional zur Zahl der Attack Nodes
 
 +++
@@ -217,7 +225,6 @@ class RandomJokeSimulation extends Simulation {
 &rarr; Bereitstellung der Container erfolgt nicht gleichzeitig <br/>
 &rarr; Keine echte Garantie, dass alle Tests gleichzeitig ausgeführt werden <br/>
 &rarr; HTML Report enthält keine Laufzeit der einzelnen Tests
-
 
 ---
 
