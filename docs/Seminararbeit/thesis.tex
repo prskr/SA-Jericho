@@ -19,11 +19,11 @@
 
 \usepackage{rotating} 
 \usepackage{adjustbox}
-
+\usepackage{afterpage} %landscape mode
+\usepackage{pdflscape}
 \usepackage{graphicx}
 \usepackage[table,xcdraw]{xcolor}
 
-\usepackage{fixltx2e}
 \usepackage[utf8]{inputenc}
 \usepackage{makeidx}
 \usepackage{amsfonts}
@@ -123,8 +123,8 @@
 \selectlanguage{ngerman}
 
 
-\deffootnote{1em}{1em}{%
- \makebox[1em][l]{\thefootnotemark}}
+\deffootnote{1.5em}{1em}{%
+ \makebox[1.5em][l]{\thefootnotemark}}
 
 \makeindex
 
@@ -163,7 +163,8 @@
 \include{docker}
 \include{gatling}
 \include{kubernetes}
-\include{vertx}
+\include{jericho}
+\include{valuation}
 \include{conclusion}
 
 

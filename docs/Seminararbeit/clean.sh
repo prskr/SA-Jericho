@@ -21,4 +21,5 @@ find $(pwd) -type f \( -name "*.aux" \
     -or -name "*.glo" \
     -or -name "*.ilg" \
     -or -name "*.ind" \
-    -or -name "*.ist" \) -exec rm -f {} \;
+    -or -name "*.ist" \
+    -or -name "*-eps-converted-to.pdf" \) -exec rm -f {} \;
