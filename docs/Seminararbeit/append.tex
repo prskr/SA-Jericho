@@ -209,8 +209,11 @@ external: true
 
 \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 
-\chapter{Verzeichnisse}
-\listoffigures
+% suppress \cleardoublepage when chapter is declared
+\newpage
+{\let\clearpage\relax \chapter{Verzeichnisse}}
+{\let\clearpage\relax \listoffigures}
+
 \cleardoublepage
 \lstlistoflistings
 \cleardoublepage
