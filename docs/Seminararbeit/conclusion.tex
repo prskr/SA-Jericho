@@ -1,1 +1,49 @@
 \chapter{Fazit}
+
+\section{Eignung von Container getriebenen Lasttests}
+\label{s:conclusionContainerDrivenStressTests}
+
+Als Fazit l\"asst sich festhalten, dass Lasttests mit Gatling und Docker durchaus m\"oglich sind, allerdings muss die statistische Aussagekraft mit einiger Skepsis betrachtet werden.
+Die in Abschnitt~\ref{s:valuationProblems} beschriebenen Probleme im Startverhalten sorgen daf\"ur, dass einige Kenngr\"o\ss{}en als eher unzuverl\"assig zu betrachten sind.
+
+Um diese Probleme zu beheben m\"usste man ein Synchronisierungsverfahren entwickeln, das sicherstellt, dass alle Attack Container erst dann mit der Simulation beginnen, wenn alle anderen Attack Container auch verf\"ugbar sind.
+Im Prinzip geht es dabei um eine Art invertierten Semaphor, der daf\"ur sorgt, dass alle beteiliten Parteien nur gemeinsam den kritischen Abschnitt betreten.
+
+Eine primitive Implementierung k\"onnte man bspw. durch eine Kombination von Lock-Dateien und Busy-Waiting umsetzen.
+Der Vorteil dieser Variante ist, dass man diese auch noch durch Bash-Skripten umsetzen kann.
+
+Eine weitere M\"oglichkeit zur Implementierung w\"are die Nutzung von Linux-Pipes.
+Daf\"ur m\"usste man aber bereits einen Control Container nutzen, der eine \glqq{}Registration-Pipe\grqq{} und eine \glqq{}Notify-Pipe\grqq{} bereitstellt.
+Anschlie\ss{}end k\"onnten sich alle Attack Container an der \glqq{}Registration-Pipe\grqq{} melden und anschlie\ss{}end an der \glqq{}Notify-Pipe\grqq{} lauschen bis alle Attack-Container sich registriert haben um erst dann zu starten.
+
+Beide Verfahren w\"urden die Zeitdifferenz zwischen den Simulationsstarts vermutlich immerhin auf $\pm 1s$ senken.
+Allerdings lassen sich dadurch leichte Unterschiede bspw. bei der Kompilierungszeit der Scenarios immer noch nicht kontrollieren.
+Eine genauere Synchronisierung ist nur innerhalb der Lasttest-Anwendung m\"oglich.
+So k\"onnte man alle Instanzen dieser abstrakten Anwendung z.B. \"uber einen Message Bus synchronisieren.
+Leider bietet Gatling offenbar keine M\"oglichkeit eine solche Synchronisierung durchzuf\"uhren.
+Zumindest ist in der Dokumentation nichts dazu zu finden.
+
+Unabh\"angig von der statistischen Aussagekraft der Ergebnisse sind Lasttests mit Gatling und Docker dennoch eine sehr gute M\"oglichkeit um eine Anwendung an die Grenze der Belastbarkeit und dar\"uber hinaus zu bringen.
+Dies ist speziell dann von Interesse, wenn man herausfinden will wann die Software sprichw\"ortlich \glqq{}zusammenbricht\grqq{}.
+Also zum Beispiel die Success-Error-Rate stark abnimmt, weil der HTTP-Timeout von 60s immer \"ofter erreicht wird.
+
+Auch f\"ur die Untersuchung der Skalierbarkeit der Anwendung sind Lasttests mit Docker sehr geeignet.
+So kann unter der Voraussetzung, dass die eigene Anwendung entweder bereits als Docker Image vorliegt oder mit vertretbarem Aufwand zu einem Image paketiert werden kann, sehr anschaulich getestet werden, ob die horizontale Skalierung einer Komponenten (z.B. eines einzelnen Microservices) tats\"achlich der Durchsatz dieser oder abh\"angiger Komponenten im selben Ma\ss{} gesteigert werden kann oder ob daf\"ur ggf. weitere Schritte notwendig sind.
+
+Als letzter Punkt sei genannt, dass Docker getriebene Lasttests einen weiteren eminenten Vorteil gegen\"uber klassischen Lasttests haben, da sie durch die Verteilung der Container auch die Latenz des Netzwerks st\"arker ber\"ucksichtigen.
+So ist der maximal erzeugbare Netwerktraffic nicht mehr abh\"angig von der Bandbreite, die ein einzelner Host bereitstellen kann.
+Sowohl die beiden vorgestellten Clustermanagementsysteme Kubernetes (vgl. Kapitel~\ref{c:kubernetes}) und Docker Swarm (vgl. Kapitel~\ref{c:docker}) als auch alle anderen weiter verbreiteten Systeme wie DC/OS Mesos u. Marathon sind daf\"ur optimiert die Last auf alle Knoten des Clusters zu verteilen wodurch nat\"urlich auch die Gesamtbandbreite vergr\"o\ss{}ert wird (zumindest solange sich die Anwendungs-Container und Lasttest-Container im selben Netzwerk-Segment befinden und nicht z.B. durch eine Firewall ausgebremst werden).
+
+\section{Ausblick}
+
+Bei einer Weiterf\"uhrung des Projekts g\"alte es einerseits, falls erforderlich, die in den Abschnitten~\ref{s:valuationProblems} und \ref{s:conclusionContainerDrivenStressTests} angesprochenen Probleme und L\"osungsans\"atze zu verfolgen um die statistische Aussagekr\"aftigkeit der Tests zu erh\"ohen.
+Andererseits k\"onnte man die bereits existierenden Konfigurationen f\"ur Docker-Dompose und Docker Swarm um Konfigurationen f\"ur Kubernetes bzw. OpenShift erg\"anzen, da sich diese im Enterprise Sektor deutlich gr\"o\ss{}erer Beliebtheit erfreuen als Docker Swarm.
+Die notwendigen Grundlagen daf\"ur wurden in Kapitel~\ref{c:kubernetes} bereits erl\"autert.
+So k\"onnten in Kubernetes die Szenario-Dateien auch in einem Cluster-Szenario durch das Feature \glqq{}Persistent Volumes\grqq{} den Attack Container bekannt gemacht werden.
+Ein \"Aquivalent zur Docker Swarm Config API w\"are die Speicherung der Simulationsdateien in \textit{etcd}.
+Wobei hier die Variante der Persistent Volumes klar zu favorisieren ist.
+
+Ein weiterer Gesichtspunkt der bereits etwas ausgereifteren Clustermanagementsysteme ist die bereits angesproche automatische Skalierung.
+Auch hier k\"onnten Container getriebene Lasttests von Interesse sein, wenn es darum geht Thresholds f\"ur das Up- und Downscaling zu validieren.
+Zudem ist es auch wichtig zu testen wie schnell sich ein zus\"atzlich gestarteter Container im Antwortverhalten bemerkbar macht.
+Eine Schwierigkeit hierbei ist, dass mehrere Komponenten ineinander greifen und sich ggf. nicht klar bestimmen l\"asst welche Komponente nun tats\"achlich das \glqq{}Bottleneck\grqq{} ist. In Frage kommen unter anderem: Warm-Up-Time des Containers (wie lange braucht ein Container um Anfragen beantworten zu k\"onnen), Load Balancer (wie schnell wird ein neu gestarteter Container im Load Balancing ber\"ucksichtigt) oder auch ob \"uberhaupt die richtige Komponente skaliert wurde oder ob das Problem urspr\"unglich von einer anderen Komponente r\"uhrt.
