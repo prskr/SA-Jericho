@@ -159,8 +159,11 @@ class RandomJokeSimulation extends Simulation {
 &rarr; 07. Juni 2014 veröffentlicht <br/>
 &rarr; Konkurrenz zu Apache Mesos, Hadoop YARN <br/>
 
++++
 
----?image=assets/images/Kubernetes.png&size=auto 70%
+### Kubernetes Architektur
+
+![Kubernetes Architektur](assets/images/Kubernetes.png)
 
 +++ 
 
