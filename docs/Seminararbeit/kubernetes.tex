@@ -10,7 +10,7 @@ Dabei werden verschiedene Aspekte wie Architektur, Skalierung oder Persistenz be
 \begin{figure}
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/kubernetes-architecture}
-	\caption[Kubernetes Architekture]{Kubernetes Architektur im Cluster}
+	\caption[Kubernetes Cluster Architektur]{Kubernetes Architektur im Cluster}
 	\label{fig:kubernetes-architecture}
 \end{figure}
 Die Architektur von Kubernetes entspricht dem Master-Slave Prinzip wie Abbildung \ref{fig:kubernetes-architecture} schematisch zeigt.
@@ -108,7 +108,7 @@ Wenn ein Pod innerhalb einer Node gestartet wird fügt das Kubelet automatisch e
 So werden zum Beispiel für den Service \glqq{}redis-master\grqq{}, der unter der Cluster-IP-Adresse 10.0.0.11 und TCP Port 6379 erreichbar ist, die in Beispiel \ref{kubernetesEnvVariables} gezeigten Umbgebungsvariablen angelegt.
 
 \begin{minipage}{\linewidth}
-	\begin{lstlisting}[frame=single,caption=Umgebungsvariablen für Service ``redis-master``, label=kubernetesEnvVariables, language=bash]
+\begin{lstlisting}[frame=single,caption=Umgebungsvariablen für Service ``redis-master``, label=kubernetesEnvVariables, language=bash]
 REDIS_MASTER_SERVICE_HOST=10.0.0.11
 REDIS_MASTER_SERVICE_PORT=6379
 REDIS_MASTER_PORT=tcp://10.0.0.11:6379
@@ -116,7 +116,7 @@ REDIS_MASTER_PORT_6379_TCP=tcp://10.0.0.11:6379
 REDIS_MASTER_PORT_6379_TCP_PROTO=tcp
 REDIS_MASTER_PORT_6379_TCP_PORT=6379
 REDIS_MASTER_PORT_6379_TCP_ADDR=10.0.0.11
-	\end{lstlisting}
+\end{lstlisting}
 \end{minipage}
 
 Dies impliziert eine gewisse Reihenfolge.
