@@ -207,8 +207,8 @@ class RandomJokeSimulation extends Simulation {
 
 ### Ergebnisse der Lasttests
 
-&rarr; Antwortzeiten der Applikatino steigen direkt prortional mit der Zahl der Attack Nodes <br/>
-&rarr; Durchsatz der Requests pro Sekunde indirekt prortional zur Zahl der Attack Nodes
+&rarr; Antwortzeiten der Applikatino steigen direkt proportional mit der Zahl der Attack Nodes <br/>
+&rarr; Durchsatz der Requests pro Sekunde verhält sich indirekt proportional zur Zahl der Attack Nodes
 
 +++
 
