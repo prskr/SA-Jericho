@@ -4,7 +4,7 @@
 
 ---
 
-# Container with machine guns
+# Containers with machine guns
 
 Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 
@@ -16,6 +16,8 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 * Docker
 * Gatling
 * Kubernetes
+* Demo
+* Evaluation der Ergebnisse
 * Ausblick
 
 ---
