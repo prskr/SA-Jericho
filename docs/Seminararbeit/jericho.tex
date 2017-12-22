@@ -14,7 +14,7 @@ Das Projekt Jericho besteht aus den drei folgenden Container-Typen:
 
 \begin{itemize}
 	\item Attack-Container
-	\item Repoter-Container
+	\item Reporter-Container
 	\item Report-Viewer-Container
 \end{itemize}
 
@@ -30,7 +30,7 @@ Das Skript \textit{attacks.sh} beinhaltet im Wesentlichen vier Schritte:
 
 \begin{enumerate}
 	\item Soweit vorhanden l\"oschen von Ergebnissen vorheriger Testl\"aufe aus dem Shared Volume \textit{gatling-logs} (vgl. Abschnitt \ref{ss:sharedVolumes}).
-	\item Starten von Gatling mit einigen \ac{CLI}-Switches, um zu gew\"ahrleisten, dass keine User-Interkation notwendig ist, wenn ein Testlauf gestartet wird.
+	\item Starten von Gatling mit einigen \ac{CLI}-Switches, um zu gew\"ahrleisten, dass keine User-Interaktion notwendig ist, wenn ein Testlauf gestartet wird.
 	\item Verschieben der aktuellen Test-Ergebnisse in das Shared Volume \textit{gatling-logs}. Die Log-Datei wird dabei umbenannt, um Dateinamenkonflikte mehrerer Attack-Container zu vermeiden.
 	\item Blockieren des Containers durch einen ewigen \glqq{}sleep\grqq{}, um zu vermeiden, dass der Container von einem Clustermanagementsystem neu gestartet wird, sobald er sich beendet.
 \end{enumerate}
