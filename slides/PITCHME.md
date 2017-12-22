@@ -12,13 +12,13 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 
 ### Agenda
 
-* Problembeschreibung
-* Docker
-* Gatling
-* Kubernetes
-* Demotime
-* Evaluation der Ergebnisse
-* Ausblick
+- Problembeschreibung
+- Docker                    |
+- Gatling                   |
+- Kubernetes                |
+- Demotime                  |
+- Evaluation der Ergebnisse |
+- Ausblick                  |
 
 ---
 
