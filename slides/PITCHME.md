@@ -16,6 +16,8 @@ Marko Grgic, Peter Kurfer, Thomas Mildner, Sebastian Weißenbacher
 * Docker
 * Gatling
 * Kubernetes
+* Demotime
+* Evaluation der Ergebnisse
 * Ausblick
 
 ---
