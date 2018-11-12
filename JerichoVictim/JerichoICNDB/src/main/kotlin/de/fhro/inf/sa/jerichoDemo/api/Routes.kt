@@ -11,37 +11,37 @@ import io.vertx.ext.web.Router
  */
 fun Router.addRoutes(vertx: Vertx) {
 
-	this.routeWithRegex(HttpMethod.GET, "^\\/api\\/v1\\/jokes\\/random$").handler( { ctx ->
-		vertx.eventBus()?.send<String>("getRandomJoke", null, { msg ->
+	this.routeWithRegex(HttpMethod.GET, "^\\/api\\/v1\\/jokes\\/random$").handler { ctx ->
+		vertx.eventBus()?.send<String>("getRandomJoke", null) { msg ->
 			val response = ctx.response()
 			if(msg.succeeded()){
 				msg.result().headers().forEach { response.putHeader(it.key, it.value) }
 				response.end(msg.result().body())
 			}
-		})
-	})
+		}
+	}
 
-	this.routeWithRegex(HttpMethod.GET, "^\\/api\\/v1\\/jokes\\/([0-9]+)$").handler({ ctx ->
+	this.routeWithRegex(HttpMethod.GET, "^\\/api\\/v1\\/jokes\\/([0-9]+)$").handler { ctx ->
 		val requestBody = JsonObject()
 		requestBody.put("jokeId", ctx.pathParam("param0"))
-		vertx.eventBus()?.send<String>("getJoke", requestBody, { msg ->
+		vertx.eventBus()?.send<String>("getJoke", requestBody) { msg ->
 			val response = ctx.response()
 			if(msg.succeeded()){
 				msg.result().headers().forEach { response.putHeader(it.key, it.value) }
 				response.end(msg.result().body())
 			}
-		})
-	})
+		}
+	}
 
-	this.routeWithRegex(HttpMethod.GET, "^\\/api\\/v1\\/jokes$").handler({ ctx ->
+	this.routeWithRegex(HttpMethod.GET, "^\\/api\\/v1\\/jokes$").handler { ctx ->
 		val requestBody = JsonObject()
 		ctx.queryParams().forEach { requestBody.put(it.key, it.value) }
-		vertx.eventBus()?.send<String>("getJokes", requestBody, { msg ->
+		vertx.eventBus()?.send<String>("getJokes", requestBody) { msg ->
 			val response = ctx.response()
 			if(msg.succeeded()){
 				msg.result().headers().forEach { response.putHeader(it.key, it.value) }
 				response.end(msg.result().body())
 			}
-		})
-	})
+		}
+	}
 }

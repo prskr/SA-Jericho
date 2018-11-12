@@ -20,9 +20,8 @@ class JokesRepository(jokesDao: JokesDao) : RepositoryBase<Jokes, JokesRecord, I
 	override fun getRandomJoke(): CompletableFuture<JokeDto> {
 		return dao.client().fetchOne(
 				DSL.using(dao.configuration())
-						.query("SELECT * FROM random_joke()"),
-				{ t -> JokeDto(t.getInteger("joke_id"), t.getString("joke_text"), t.getString("category_text")) }
-		)
+						.query("SELECT * FROM random_joke()")
+		) { t -> JokeDto(t.getInteger("joke_id"), t.getString("joke_text"), t.getString("category_text")) }
 	}
 
 	override fun findByJokeAsync(joke: String): CompletableFuture<List<JokeDto>> {
@@ -33,8 +32,8 @@ class JokesRepository(jokesDao: JokesDao) : RepositoryBase<Jokes, JokesRecord, I
 						.leftJoin(CATEGORIES)
 						.on(JOKES.CATEGORYID.eq(CATEGORIES.ID))
 						.where(JOKES.JOKE.eq(joke))
-						.query, { t -> JokeDto(t.getInteger("id", 0), t.getString("joke"), t.getString("name")) }
-		)
+						.query
+		) { t -> JokeDto(t.getInteger("id", 0), t.getString("joke"), t.getString("name")) }
 	}
 
 	override fun findAllIncludingCategory(pageIndex: Int, pageSize: Int): CompletableFuture<List<JokeDto>> {
@@ -46,8 +45,8 @@ class JokesRepository(jokesDao: JokesDao) : RepositoryBase<Jokes, JokesRecord, I
 						.on(JOKES.CATEGORYID.eq(CATEGORIES.ID))
 						.limit(pageSize)
 						.offset(pageSize * pageIndex)
-						.query, { t -> JokeDto(t.getInteger("id", 0), t.getString("joke")) }
-		)
+						.query
+		) { t -> JokeDto(t.getInteger("id", 0), t.getString("joke")) }
 	}
 
 	override fun findAllAsync(pageIndex: Int, pageSize: Int): CompletableFuture<List<Jokes>> {
@@ -57,7 +56,7 @@ class JokesRepository(jokesDao: JokesDao) : RepositoryBase<Jokes, JokesRecord, I
 						.from(Tables.JOKES)
 						.limit(pageSize)
 						.offset(pageSize * pageIndex)
-						.query, { t -> Jokes(t) })
+						.query) { t -> Jokes(t) }
 	}
 
 }

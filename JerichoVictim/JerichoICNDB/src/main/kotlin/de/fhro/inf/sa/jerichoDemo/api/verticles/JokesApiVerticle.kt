@@ -34,13 +34,13 @@ class JokesApiVerticle : AbstractVerticle() {
 		try {
 			val jokeId = Json.mapper.readValue(message.body().getString("jokeId"), Int::class.java)
 
-			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_JOKE_JPA_ID, jokeId, { result ->
+			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_JOKE_JPA_ID, jokeId) { result ->
 				if (result.succeeded()) {
 					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				} else {
 					logger.manageError(message, result.cause(), "getJoke")
 				}
-			})
+			}
 		} catch (e: Exception) {
 			logger.logUnexpectedError("getJoke", e)
 			message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
@@ -49,12 +49,12 @@ class JokesApiVerticle : AbstractVerticle() {
 
 	private fun getJokes(message: Message<JsonObject>) {
 		try {
-			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_JOKES_JPA_ID, message.body(), { result ->
+			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_JOKES_JPA_ID, message.body()) { result ->
 				if (result.succeeded())
 					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				else
 					logger.manageError(message, result.cause(), "getJokes")
-			})
+			}
 		} catch (e: Exception) {
 			logger.logUnexpectedError("getJokes", e)
 			message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
@@ -63,13 +63,13 @@ class JokesApiVerticle : AbstractVerticle() {
 
 	private fun getRandomJoke(message: Message<JsonObject>) {
 		try {
-			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_RANDOM_JOKE_JPA_ID, null, { result ->
+			vertx.eventBus().send<JsonObject>(CQRSEndpoints.GET_RANDOM_JOKE_JPA_ID, null) { result ->
 				if (result.succeeded()) {
 					message.reply(result.result().body(), DeliveryOptions().addContentTypeJson())
 				} else {
 					logger.manageError(message, result.cause(), "getRandomJoke")
 				}
-			})
+			}
 		} catch (e: Exception) {
 			logger.logUnexpectedError("getRandomJoke", e)
 			message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)

@@ -98,13 +98,13 @@ class MainApiVerticle : AbstractVerticle() {
 				CategoriesApiVerticle::class.java.name,
 				JokesJpaApiVerticle::class.java.name)
 				.forEach { className ->
-					vertx.deployVerticle("java-guice:$className", deploymentOptions, { res ->
+					vertx.deployVerticle("java-guice:$className", deploymentOptions) { res ->
 						if (res.succeeded()) {
 							logger.info("$className: Deployed")
 						} else {
 							startFuture?.fail(res.cause())
 						}
-					})
+					}
 				}
 	}
 }

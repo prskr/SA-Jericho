@@ -48,11 +48,11 @@ class JokesJpaApiVerticle @Inject constructor(private val jokesRepo: IJokesRepos
 		jokesRepo.findAllIncludingCategory(pageIndex, pageSize).thenApplyAsync { list ->
 			if (list.isEmpty()) message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, ApiExceptions.INTERNAL_SERVER_ERROR.statusMessage)
 			message.reply(JsonObject(Json.encode(JokesArrayDto(list.size, list))).encode())
-		}.whenComplete({ _, u ->
+		}.whenComplete { _, u ->
 			if (u != null) {
 				message.fail(ApiExceptions.INTERNAL_SERVER_ERROR.statusCode, u.message)
 			}
-		})
+		}
 	}
 
 	private fun handleGetJokeById(message: Message<Int>) {

@@ -22,8 +22,8 @@ class CategoriesRepository(dao: CategoriesDao) : RepositoryBase<Categories, Cate
 						.from(Tables.CATEGORIES)
 						.limit(pageSize)
 						.offset(pageSize * pageIndex)
-						.query, { t -> Categories(t) }
-		)
+						.query
+		) { t -> Categories(t) }
 	}
 
 	override fun exists(category: String): CompletableFuture<Boolean> {
@@ -33,8 +33,8 @@ class CategoriesRepository(dao: CategoriesDao) : RepositoryBase<Categories, Cate
 						.from(CATEGORIES)
 						.where(CATEGORIES.NAME.eq(category))
 						.limit(1)
-						.query, { t -> t.getInteger("id") }
-		).thenApplyAsync { ids -> !ids.isEmpty() }
+						.query
+		) { t -> t.getInteger("id") }.thenApplyAsync { ids -> !ids.isEmpty() }
 	}
 
 }

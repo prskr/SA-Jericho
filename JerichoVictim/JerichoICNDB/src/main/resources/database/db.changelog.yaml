@@ -63,7 +63,7 @@ databaseChangeLog:
                         name: name
                         type: STRING
                     - column:
-                        name: categoryId
+                        name: id
                         type: NUMERIC
                 encoding: UTF-8
                 file: database/data/categories.csv
