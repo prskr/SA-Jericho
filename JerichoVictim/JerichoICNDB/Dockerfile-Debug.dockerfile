@@ -1,4 +1,4 @@
-FROM gradle:4.3.1-jdk-alpine
+FROM gradle:4.10.2-jdk-alpine
 EXPOSE 8080
 EXPOSE 5005
 ENTRYPOINT ["gradle", "run", "--no-daemon"]
